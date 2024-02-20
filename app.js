@@ -1,24 +1,20 @@
 const express = require("express");
-const pool = require("./database/db");
+const pool = require("./config/db");
+const routes = require("./routes");
+const cors = require("cors");
 
 const app = express();
 const PORT = 8000;
 
+app.use(express.json());
+app.use(cors());
+
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("AA SPORTS API");
 });
 
-app.get("/about", (req, res) => {
-  res.send("About route 🎉 ");
-});
-
-app.get("/product", async (req, res) => {
-  const product = await pool.query(
-    "Select * from product Where name = 'Baseball Uniform for Women';"
-  );
-  res.json(product.rows[0]);
-});
+app.use("/api", routes);
 
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`💥 Server is running on port ${PORT} ✌️`);
 });
