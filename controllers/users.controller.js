@@ -9,12 +9,12 @@ const getAllUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   const { name, password, email } = req.body;
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = await hashPassword(password);
 
   const user = await userService.createUser({
     name,
     email,
-    hashedPassword,
+    password: hashedPassword,
   });
 
   res.status(201).json({
@@ -34,7 +34,7 @@ const getUserById = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-  const { id } = req.user;
+  const { id } = req.body.user;
 
   const user = await userService.getUserById(id);
 
@@ -42,7 +42,8 @@ const getUserProfile = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { email, address, city, state, country } = req.body;
+  const { name, email, phone_number, address, city, state, zip_code, country } =
+    req.body;
   try {
     const results = await userService.updateUser({
       name,
@@ -59,4 +60,28 @@ const updateUser = async (req, res) => {
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
+};
+
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await userService.deleteUser(id);
+    res.status(200).json(result);
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+// const changeUserPassword = async (req, res) => {
+//   const { id } = req.params;
+//   const user = await getUserById(id);
+// };
+
+module.exports = {
+  getAllUsers,
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+  getUserProfile,
 };

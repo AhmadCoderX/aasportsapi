@@ -63,8 +63,77 @@ ADD COLUMN IF NOT EXISTS zip_code VARCHAR(20),
 ADD COLUMN IF NOT EXISTS country VARCHAR(50),
 ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
-    
+ALTER TABLE customer ADD password VARCHAR(255);
 
+-- resetTokens table
+CREATE TABLE resetTokens
+(
+    id UUID DEFAULT uuid_generate_v4() NOT NULL,
+    email character varying NOT NULL,
+    token character varying NOT NULL,
+    used boolean DEFAULT false NOT NULL,
+    expiration timestamp without time zone,
+    PRIMARY KEY (id)
+);
+
+--cart db
+CREATE TABLE cart
+(
+    id UUID DEFAULT uuid_generate_v4() NOT NULL,
+    customer_id UUID,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE cart_item
+(
+    id UUID DEFAULT uuid_generate_v4() NOT NULL,
+    cart_id UUID NOT NULL,
+    product_id UUID NOT NULL,
+    quantity integer NOT NULL CHECK (quantity > 0),
+    PRIMARY KEY (id),
+    UNIQUE (cart_id, product_id)
+);
+
+CREATE TABLE order_item
+(
+    id SERIAL NOT NULL,
+    order_id integer NOT NULL,
+    product_id integer NOT NULL,
+    quantity integer NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TYPE "payment" AS ENUM (
+  'PAYSTACK',
+  'STRIPE'
+);
+
+CREATE TABLE orders
+(
+    order_id SERIAL NOT NULL,
+    customer_id UUID NOT NULL,
+    status character varying(20) NOT NULL,
+    date timestamp without time zone DEFAULT CURRENT_DATE NOT NULL,
+    amount real,
+    total integer,
+    ref character varying(100),
+    payment_method payment,
+    PRIMARY KEY (order_id),
+    FOREIGN KEY (customer_id) REFERENCES customer(id)
+);
+
+-- -- Rename the column
+-- ALTER TABLE order_item
+-- RENAME COLUMN product_item_id TO product_id;
+
+-- -- Change the data type
+-- ALTER TABLE order_item
+-- ALTER COLUMN product_id SET DATA TYPE UUID;
+
+-- -- Add foreign key constraint
+-- ALTER TABLE order_item
+-- ADD CONSTRAINT fk_order_item_product
+-- FOREIGN KEY (product_id) REFERENCES product(id);
 
 
 -- adding category and product

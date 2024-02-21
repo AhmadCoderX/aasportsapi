@@ -15,14 +15,14 @@ const createUserDb = async ({ name, email, password }) => {
 
 const getUserByIdDb = async (id) => {
   const { rows: user } = await pool.query(
-    "SELECT * FROM customer WHERE customer.id = $1",
+    "SELECT customer.*, cart.id as cart_id FROM customer LEFT JOIN cart ON cart.customer_id = customer.id WHERE customer.id = $1",
     [id]
   );
   return user[0];
 };
 const getUserByEmailDb = async (email) => {
   const { rows: user } = await pool.query(
-    "SELECT * FROM customer WHERE customer.email = $1",
+    "SELECT customer.*, cart.id as cart_id FROM customer LEFT JOIN cart ON cart.customer_id = customer.id WHERE customer.email = $1",
     [email]
   );
   return user[0];
