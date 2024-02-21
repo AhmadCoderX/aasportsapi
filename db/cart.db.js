@@ -21,9 +21,6 @@ const getCartDb = async (customerId) => {
 
   return cart.rows;
 };
-// select product.* , cart_item.quantity, round((10*cart_item.quantity)::numeric, 2) as subtotal, customer.name from customer join cart on customer.id = cart.customer_id join cart_item on cart.id = cart_item.cart_id join product on product.id = cart_item.product_id where customer.id = 'f17fce3a-1c2b-4beb-aa65-03d4d445d968';
-
-//  INSERT INTO cart_item(cart_id, product_id, quantity) VALUES ('59b1e681-fba1-4719-8581-f64324bf3200', '2f8ea03d-504b-4878-829c-b7e876fd50ec', 4) ON CONFLICT (cart_id, product_id) DO UPDATE SET quantity = cart_item.quantity + 1 RETURNING *;
 // add item to cart
 const addItemDb = async ({ cart_id, product_id, quantity }) => {
   await pool.query(
