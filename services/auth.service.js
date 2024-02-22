@@ -83,30 +83,25 @@ class AuthService {
       //   throw new ErrorHandler(403, "Login in with Google");
       // }
 
-      const {
-        password: dbPassword,
-        id: user_id,
-        cart_id,
-        name: fullname,
-      } = user;
+      const { password: dbPassword, id, cart_id, name: fullname } = user;
       const isCorrectPassword = await bcrypt.compare(password, dbPassword);
 
       if (!isCorrectPassword) {
         throw new ErrorHandler(403, "Email or password incorrect.");
       }
 
-      const token = await this.signToken({ id: user_id, cart_id });
+      const token = await this.signToken({ id, cart_id });
       const refreshToken = await this.signRefreshToken({
-        id: user_id,
+        id,
         cart_id,
       });
       return {
         token,
         refreshToken,
         user: {
-          user_id,
+          id,
           fullname,
-          cart_id: cart_id,
+          cart_id,
         },
       };
     } catch (error) {
