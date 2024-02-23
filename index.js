@@ -8,5 +8,5 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () =>
-  console.info(`🔥Magic happening on port: ${PORT} 🔥`)
+  console.info(`🔥 API is Running On PORT => ${PORT} 🔥`)
 );

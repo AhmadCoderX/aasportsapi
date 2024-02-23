@@ -57,6 +57,7 @@ class AuthService {
             user_id: newUser.id,
             fullname: newUser.name,
             email: newUser.email,
+            cart_id,
           },
         };
       } else {

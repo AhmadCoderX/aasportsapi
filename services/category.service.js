@@ -1,14 +1,23 @@
 const {
-  getAllCategoriesDb,
+  getParentCategoriesDb,
+  getSubcategoriesDb,
   createCategoryDb,
-  changeCategoryNameDb,
-  getCategoryById,
+  updateCategoryDb,
+  getCategoryProductsDb,
 } = require("../db/category.db");
 const { ErrorHandler } = require("../helpers/error");
 class CategoryService {
-  getAllCategories = async () => {
+  getParentCategories = async () => {
     try {
-      return await getAllCategoriesDb();
+      return await getParentCategoriesDb();
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  getSubcategories = async (data) => {
+    try {
+      return await getSubcategoriesDb(data);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }
@@ -22,17 +31,17 @@ class CategoryService {
     }
   };
 
-  getCategoryById = async (data) => {
+  getCategoryProducts = async (data) => {
     try {
-      return await getCategoryById(data);
+      return await getCategoryProductsDb(data);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }
   };
 
-  changeCategoryName = async (data) => {
+  updateCategory = async (data) => {
     try {
-      return await changeCategoryNameDb(data);
+      return await updateCategoryDb(data);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }

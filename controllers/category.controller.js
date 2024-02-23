@@ -1,7 +1,12 @@
 const categoryService = require("../services/category.service");
 
-const getAllCategories = async (req, res) => {
-  const categories = await categoryService.getAllCategories();
+const getParentCategories = async (req, res) => {
+  const categories = await categoryService.getParentCategories();
+  res.json(categories);
+};
+
+const getSubcategories = async (req, res) => {
+  const categories = await categoryService.getSubcategories(req.body);
   res.json(categories);
 };
 
@@ -11,24 +16,28 @@ const createNewCategory = async (req, res) => {
   res.status(201).json(newCategory);
 };
 
-const getCategoryById = async (req, res) => {
-  const category = await categoryService.getCategoryById({ id: req.params.id });
+const getCategoryProducts = async (req, res) => {
+  const category = await categoryService.getCategoryProducts({
+    id: req.params.id,
+  });
   res.status(200).json(category);
 };
 
-const changeCategoryName = async (req, res) => {
-  const { category_new_name } = req.body;
+const updateCategory = async (req, res) => {
+  const { new_name, description } = req.body;
   const { id } = req.params;
-  const updatedCategory = await categoryService.changeCategoryName({
-    category_new_name,
+  const updatedCategory = await categoryService.updateCategory({
+    new_name,
     id,
+    description,
   });
   res.status(200).json(updatedCategory);
 };
 
 module.exports = {
-  getAllCategories,
+  getParentCategories,
+  getSubcategories,
   createNewCategory,
-  changeCategoryName,
-  getCategoryById,
+  updateCategory,
+  getCategoryProducts,
 };

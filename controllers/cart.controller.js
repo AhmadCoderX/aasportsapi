@@ -1,25 +1,25 @@
 const cartService = require("../services/cart.service");
 
 const getCart = async (req, res) => {
-  const userId = req.user.id;
+  const { user_id } = req.body.user;
 
   // get cart items
-  const cart = await cartService.getCart(userId);
+  const cart = await cartService.getCart(user_id);
   res.json({ items: cart });
 };
 
 // add item to cart
 const addItem = async (req, res) => {
-  const cart_id = req.user.cart_id;
+  // const cart_id = req.body.user.cart_id; // request.user.cart_id
 
-  const cart = await cartService.addItem({ ...req.body, cart_id });
+  const cart = await cartService.addItem(req.body.user);
   res.status(200).json({ data: cart });
 };
 
 // delete item from cart
 const deleteItem = async (req, res) => {
-  const { product_id } = req.body;
-  const cart_id = req.user.cart_id;
+  const { product_id, cart_id } = req.body.user;
+  // const cart_id = req.user.cart_id;
 
   const data = await cartService.removeItem({ cart_id, product_id });
   res.status(200).json(data);
@@ -27,8 +27,8 @@ const deleteItem = async (req, res) => {
 
 // increment item quantity by 1
 const increaseItemQuantity = async (req, res) => {
-  const { product_id } = req.body;
-  const cart_id = req.user.cart_id;
+  const { product_id, cart_id } = req.body.user;
+  // const cart_id = req.user.cart_id;
 
   const cart = await cartService.increaseQuantity({ cart_id, product_id });
   res.json(cart);
@@ -36,8 +36,8 @@ const increaseItemQuantity = async (req, res) => {
 
 // decrement item quantity by 1
 const decreaseItemQuantity = async (req, res) => {
-  const { product_id } = req.body;
-  const cart_id = req.user.cart_id;
+  const { product_id, cart_id } = req.body.user;
+  // const cart_id = req.user.cart_id;
 
   const cart = await cartService.decreaseQuantity({ cart_id, product_id });
   res.json(cart);
