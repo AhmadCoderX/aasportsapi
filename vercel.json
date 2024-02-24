@@ -13,5 +13,5 @@
       "dest": "app.js"
     }
   ],
-  "rewrites": [{ "source": "/products", "destination": "/routes/product.js" }]
+  "rewrites": [{ "source": "/*", "destination": "/routes" }]
 }
