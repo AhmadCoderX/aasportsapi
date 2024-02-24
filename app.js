@@ -19,7 +19,7 @@ app.use(compression());
 app.use(helmet());
 
 app.get("/", (req, res) => {
-  res.send("AA SPORTS API");
+  res.send("AA SPORTS API BY AHMAD");
 });
 
 app.use("/", routes);
