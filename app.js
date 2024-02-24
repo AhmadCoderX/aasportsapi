@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
   res.send("AA SPORTS API BY AHMAD");
 });
 
-app.use("/", routes);
+app.use(routes);
 
 app.use(handleError);
 
