@@ -8,5 +8,7 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () =>
-  console.info(`🔥 API is Running On PORT => ${PORT} 🔥`)
+  console.info(
+    `🔥 Coffee's brewed, code compiled, server's feeling energized. ☕️ => ${PORT} 🔥`
+  )
 );

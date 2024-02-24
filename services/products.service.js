@@ -4,6 +4,12 @@ const {
   createProductDb,
   updateProductDb,
   deleteProductDb,
+  addPrimaryImageDb,
+  updatePrimaryImageDb,
+  addSecondaryImageDb,
+  updateSecondaryImageDb,
+  deleteSecondaryImageDb,
+  deleteAllImagesDb,
 } = require("../db/products.db");
 const { ErrorHandler } = require("../helpers/error");
 
@@ -17,8 +23,12 @@ class ProductService {
     }
   };
   addProduct = async (data) => {
+    const { product_image_url } = data;
     try {
-      return await createProductDb(data);
+      const createdProduct = await createProductDb(data);
+      const { product_image_url, id: product_id } = createdProduct;
+      await addPrimaryImageDb({ image_url: product_image_url, product_id });
+      return createdProduct;
     } catch (err) {
       throw new ErrorHandler(err.statusCode, err.message);
     }
@@ -42,7 +52,10 @@ class ProductService {
       if (!product) {
         throw new ErrorHandler(404, "Product Not Found!");
       }
-      return await updateProductDb(data);
+      const { product_image_url: image_url, id: product_id } = data;
+      const updatedProduct = await updateProductDb(data);
+      await updatePrimaryImageDb({ image_url, product_id });
+      return updatedProduct;
     } catch (err) {
       throw new ErrorHandler(err.statusCode, err.message);
     }
@@ -57,8 +70,33 @@ class ProductService {
         throw new ErrorHandler(404, "Product Not Found!");
       }
       console.log(product);
+      await deleteAllImagesDb({ product_id: id });
       return await deleteProductDb({ id });
     } catch (err) {
+      throw new ErrorHandler(err.statusCode, err.message);
+    }
+  };
+
+  addSecondaryProductImage = async (data) => {
+    try {
+      return await addSecondaryImageDb(data);
+    } catch (error) {
+      throw new ErrorHandler(err.statusCode, err.message);
+    }
+  };
+
+  updateSecondaryImage = async (data) => {
+    try {
+      return await updateSecondaryImageDb(data);
+    } catch (error) {
+      throw new ErrorHandler(err.statusCode, err.message);
+    }
+  };
+
+  deleteSecondaryImage = async (data) => {
+    try {
+      return await deleteSecondaryImageDb(data);
+    } catch (error) {
       throw new ErrorHandler(err.statusCode, err.message);
     }
   };

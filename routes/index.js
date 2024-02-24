@@ -5,6 +5,7 @@ const cart = require("./cart");
 const auth = require("./auth");
 const category = require("./category");
 const order = require("./order");
+const swaggerUi = require("swagger-ui-express");
 const payment = require("./payment");
 
 router.use("/products", product);
@@ -14,5 +15,6 @@ router.use("/auth", auth);
 router.use("/category", category);
 router.use("/order", order);
 router.use("/payment", payment);
+// router.use("/docs", swaggerUi.serve, swaggerUi.setup(docs));
 
 module.exports = router;

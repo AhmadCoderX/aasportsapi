@@ -130,6 +130,25 @@ CREATE TABLE orders
     FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
 
+-- Reviews Table 
+CREATE TABLE reviews (
+  id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES customer(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+  content text NOT NULL,
+  rating integer NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE prod_img_type AS ENUM ('primary', 'secondary');
+
+CREATE TABLE product_images (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    product_id UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+    image_url TEXT NOT NULL,
+    type prod_img_type
+);
+
 
 -- -- Rename the column
 -- ALTER TABLE order_item

@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.9",
     "pg": "^8.11.3",
     "pino": "^8.19.0",
-    "stripe": "^14.18.0"
+    "stripe": "^14.18.0",
+    "swagger-ui-express": "^5.0.0"
   }
 }
