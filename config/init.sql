@@ -149,6 +149,85 @@ CREATE TABLE product_images (
     type prod_img_type
 );
 
+-- creating table custom_product
+
+CREATE TABLE custom_product(
+    c_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- c_id for custom product id
+    product_name VARCHAR(255),
+    sku VARCHAR(255)
+); 
+
+CREATE TABLE c_front_objects (
+    front_object_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
+    title VARCHAR(255),
+    type VARCHAR(255),
+    path TEXT,
+    color VARCHAR(100),
+    id TEXT
+);
+
+CREATE TABLE c_back_objects (
+    back_object_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
+    title VARCHAR(255),
+    type VARCHAR(255),
+    path TEXT,
+    color VARCHAR(100),
+    id TEXT
+);
+
+CREATE TABLE c_front_text (
+    front_text_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    x FLOAT NOT NULL,
+    y FLOAT NOT NULL,
+    text VARCHAR(255) NOT NULL,
+    strokeWidth FLOAT NOT NULL,
+    fontSize FLOAT NOT NULL,
+    draggable BOOLEAN NOT NULL,
+    align VARCHAR(100) NOT NULL,
+    width VARCHAR(100) NOT NULL, 
+    height VARCHAR(100) NOT NULL,
+    fill VARCHAR(100) NOT NULL,
+    stroke VARCHAR(100) NOT NULL,
+    fontFamily VARCHAR(255) NOT NULL,
+    id TEXT NOT NULL
+);
+
+CREATE TABLE c_back_text (
+    back_text_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    x FLOAT NOT NULL,
+    y FLOAT NOT NULL,
+    text VARCHAR(255) NOT NULL,
+    strokeWidth FLOAT NOT NULL,
+    fontSize FLOAT NOT NULL,
+    draggable BOOLEAN NOT NULL,
+    align VARCHAR(100) NOT NULL,
+    width VARCHAR(100) NOT NULL, 
+    height VARCHAR(100) NOT NULL,
+    fill VARCHAR(100) NOT NULL,
+    stroke VARCHAR(100) NOT NULL,
+    fontFamily VARCHAR(255) NOT NULL,
+    id TEXT NOT NULL
+);
+
+CREATE TABLE front_mask_image (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
+    title VARCHAR(255),
+    src TEXT NOT NULL
+);
+
+CREATE TABLE back_mask_image (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
+    title VARCHAR(255),
+    src TEXT NOT NULL
+);
 
 -- -- Rename the column
 -- ALTER TABLE order_item
