@@ -1,4 +1,5 @@
 const {
+  getAllCustomProductsDb,
   createCustomProductDb,
   addFrontPathDb,
   addBackPathDb,
@@ -18,10 +19,24 @@ const {
   deleteFrontMaskImageDb,
   updateBackMaskImageDb,
   deleteBackMaskImageDb,
+  getCustomProductDb,
+  createUserCustomProductDb,
+  getUserCustomProductDb,
+  updateUserCustomProductDb,
+  deleteUserCustomProductDb,
+  getAllUserCustomProductDb,
 } = require("../db/custom_product.db");
 const { ErrorHandler } = require("../helpers/error");
 
 class customProductService {
+  getAllCustomProducts = async () => {
+    try {
+      return await getAllCustomProductsDb();
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
   createCustomProduct = async (data) => {
     try {
       return await createCustomProductDb(data);
@@ -169,6 +184,72 @@ class customProductService {
   deleteBackMaskImage = async (id) => {
     try {
       return await deleteBackMaskImageDb(id);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  getCustomProduct = async (id) => {
+    try {
+      return await getCustomProductDb(id);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  createUserCustomProduct = async (data) => {
+    try {
+      return await createUserCustomProductDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  getUserCustomProduct = async (id) => {
+    try {
+      const product = await getUserCustomProductDb(id);
+      if (product) {
+        return product;
+      } else {
+        return "Product not found";
+      }
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  updateUserCustomProduct = async (data) => {
+    try {
+      const { user_custom_product_id } = data;
+      const userProduct = await getUserCustomProductDb({
+        user_custom_product_id,
+      });
+      if (userProduct) {
+        return await updateUserCustomProductDb(data);
+      } else {
+        return "Product not found";
+      }
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  deleteUserCustomProduct = async (id) => {
+    try {
+      const userProduct = await getUserCustomProductDb(id);
+      if (userProduct) {
+        return await deleteUserCustomProductDb(id);
+      } else {
+        return "Product not found";
+      }
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  getAllUserCustomProduct = async (id) => {
+    try {
+      return await getAllUserCustomProductDb(id);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }

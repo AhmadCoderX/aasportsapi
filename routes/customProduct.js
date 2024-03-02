@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const {
+  getAllCustomProducts,
   createCustomProduct,
   addFrontPath,
   addBackPath,
@@ -19,9 +20,16 @@ const {
   deleteFrontMaskImage,
   updateBackMaskImage,
   deleteBackMaskImage,
+  getCustomProduct,
+  createUserCustomProduct,
+  updateUserCustomProduct,
+  getUserCustomProduct,
+  deleteUserCustomProduct,
+  getALlUserCustomProduct,
 } = require("../controllers/custom_product.controller");
 
-router.route("/").post(createCustomProduct);
+router.route("/").get(getAllCustomProducts).post(createCustomProduct);
+router.route("/:c_id").get(getCustomProduct);
 
 router.route("/front-path").post(addFrontPath);
 
@@ -64,5 +72,20 @@ router
   .route("/back-mask-image/:id")
   .put(updateBackMaskImage)
   .delete(deleteBackMaskImage);
+
+// User Custom Product Routes
+router.route("/user-custom-product").post(createUserCustomProduct);
+
+router
+  .route("/user-custom-product/:user_custom_product_id")
+  .get(getUserCustomProduct)
+  .put(updateUserCustomProduct)
+  .delete(deleteUserCustomProduct);
+
+// Get all user custom products
+
+router
+  .route("/all-user-custom-products/:customer_id")
+  .get(getALlUserCustomProduct);
 
 module.exports = router;

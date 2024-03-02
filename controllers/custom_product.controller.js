@@ -1,6 +1,15 @@
 const { ErrorHandler } = require("../helpers/error");
 const customService = require("../services/custom_product.service");
 
+const getAllCustomProducts = async (req, res) => {
+  try {
+    const allProducts = await customService.getAllCustomProducts();
+    res.status(200).json(allProducts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 const createCustomProduct = async (req, res) => {
   try {
     const { product_name, sku } = req.body;
@@ -368,7 +377,83 @@ const deleteBackMaskImage = async (req, res) => {
   }
 };
 
+const getCustomProduct = async (req, res) => {
+  try {
+    const { c_id } = req.params;
+    const product = await customService.getCustomProduct({ c_id });
+    res.status(200).json(product);
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const createUserCustomProduct = async (req, res) => {
+  try {
+    const { customer_id, custom_product_id, user_product } = req.body;
+    const createdProduct = await customService.createUserCustomProduct({
+      customer_id,
+      custom_product_id,
+      user_product,
+    });
+    res.status(201).json(createdProduct);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const updateUserCustomProduct = async (req, res) => {
+  try {
+    const { new_user_custom_product } = req.body;
+    const { user_custom_product_id } = req.params;
+    const updatedProduct = await customService.updateUserCustomProduct({
+      user_custom_product_id,
+      new_user_custom_product,
+    });
+    res.status(201).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const getUserCustomProduct = async (req, res) => {
+  try {
+    const { user_custom_product_id } = req.params;
+    const product = await customService.getUserCustomProduct({
+      user_custom_product_id,
+    });
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const deleteUserCustomProduct = async (req, res) => {
+  try {
+    const { user_custom_product_id } = req.params;
+    const deletedProduct = await customService.deleteUserCustomProduct({
+      user_custom_product_id,
+    });
+    res.status(200).json(deletedProduct);
+  } catch (error) {
+    res.status(500).json(error);
+    // throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const getALlUserCustomProduct = async (req, res) => {
+  try {
+    const { customer_id } = req.params;
+    const products = await customService.getAllUserCustomProduct({
+      customer_id,
+    });
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
+  getAllCustomProducts,
   createCustomProduct,
   addFrontPath,
   addBackPath,
@@ -388,4 +473,10 @@ module.exports = {
   deleteFrontMaskImage,
   updateBackMaskImage,
   deleteBackMaskImage,
+  getCustomProduct,
+  createUserCustomProduct,
+  updateUserCustomProduct,
+  getUserCustomProduct,
+  deleteUserCustomProduct,
+  getALlUserCustomProduct,
 };

@@ -88,7 +88,7 @@ CREATE TABLE resetTokens
 CREATE TABLE cart
 (
     id UUID DEFAULT uuid_generate_v4() NOT NULL,
-    customer_id UUID,
+    customer_id UUID, -- it can be a logged in user or a random user (not logged in)
     PRIMARY KEY (id)
 );
 
@@ -96,8 +96,8 @@ CREATE TABLE cart_item
 (
     id UUID DEFAULT uuid_generate_v4() NOT NULL,
     cart_id UUID NOT NULL,
-    product_id UUID NOT NULL,
-    quantity integer NOT NULL CHECK (quantity > 0),
+    product_id UUID NOT NULL, -- it will be user customized product id. image / color 
+    quantity integer NOT NULL CHECK (quantity > 0), 
     PRIMARY KEY (id),
     UNIQUE (cart_id, product_id)
 );
@@ -155,7 +155,13 @@ CREATE TABLE custom_product(
     c_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- c_id for custom product id
     product_name VARCHAR(255),
     sku VARCHAR(255)
-); 
+);
+
+-- Adding thumbnail images
+ALTER TABLE custom_product 
+ADD COLUMN front_image_src TEXT, 
+ADD COLUMN back_image_src TEXT;
+
 
 CREATE TABLE c_front_objects (
     front_object_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -227,6 +233,14 @@ CREATE TABLE back_mask_image (
     custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
     title VARCHAR(255),
     src TEXT NOT NULL
+);
+
+-- User Custom Product Table
+CREATE TABLE user_custom_product(
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES customer(id) ON DELETE CASCADE,
+    custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
+    user_product JSONB
 );
 
 -- -- Rename the column
