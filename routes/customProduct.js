@@ -62,7 +62,8 @@ router
 
 router
   .route("/front-mask-image")
-  .post(upload.single("image"), addFrontMaskImage);
+  .post(upload.single("image"), addFrontMaskImage)
+  .delete(deleteFrontMaskImage);
 
 router
   .route("/front-mask-image/:id")

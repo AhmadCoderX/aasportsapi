@@ -4,7 +4,6 @@ const routes = require("./routes");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
-const helmet = require("helmet");
 const compression = require("compression");
 const { handleError } = require("./helpers/error");
 
@@ -16,7 +15,6 @@ app.use(cors());
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(compression());
-app.use(helmet());
 app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {

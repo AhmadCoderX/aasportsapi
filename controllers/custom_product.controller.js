@@ -1,3 +1,5 @@
+const path = require("path");
+const fs = require("fs");
 const { ErrorHandler } = require("../helpers/error");
 const customService = require("../services/custom_product.service");
 
@@ -144,11 +146,10 @@ const addFrontMaskImage = async (req, res) => {
   try {
     const { custom_product_id, title } = req.body;
     const src = req.imageName;
-    const imageUrl = `https://api.aasportsusa.com/uploads/${src}`;
     const addedMaskImage = await customService.addFrontMaskImage({
       custom_product_id,
       title,
-      src: imageUrl,
+      src,
     });
     res.status(201).json(addedMaskImage);
   } catch (error) {
@@ -342,15 +343,28 @@ const updateFrontMaskImage = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
 const deleteFrontMaskImage = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedImage = await customService.deleteFrontMaskImage({ id });
+    const { custom_product_id } = req.body;
+    const deletedImage = await customService.deleteFrontMaskImage({
+      custom_product_id,
+    });
+
+    if (!deletedImage) {
+      // Handle case where deletion failed or no image found
+      return res.status(404).json({ message: "Mask image not found" });
+    }
+    console.log(deletedImage);
+    const filePath = path.join(process.cwd(), "uploads", deletedImage?.src);
+    fs.unlinkSync(filePath);
+
     res.status(200).json(deletedImage);
   } catch (error) {
     throw new ErrorHandler(error.statusCode, error.message);
   }
 };
+
 const updateBackMaskImage = async (req, res) => {
   try {
     const { title, src } = req.body;
