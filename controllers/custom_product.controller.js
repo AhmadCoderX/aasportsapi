@@ -144,7 +144,7 @@ const addFrontMaskImage = async (req, res) => {
   try {
     const { custom_product_id, title } = req.body;
     const src = req.imageName;
-    const imageUrl = `http://localhost:8000/uploads/${src}`;
+    const imageUrl = `https://api.aasportsusa.com/uploads/${src}`;
     const addedMaskImage = await customService.addFrontMaskImage({
       custom_product_id,
       title,
