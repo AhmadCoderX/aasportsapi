@@ -27,6 +27,7 @@ const {
   deleteUserCustomProduct,
   getALlUserCustomProduct,
 } = require("../controllers/custom_product.controller");
+const { upload } = require("../helpers/file-upload");
 
 router.route("/").get(getAllCustomProducts).post(createCustomProduct);
 router.route("/:c_id").get(getCustomProduct);
@@ -59,7 +60,9 @@ router
   .put(updateBackText)
   .delete(deleteBackText);
 
-router.route("/front-mask-image").post(addFrontMaskImage);
+router
+  .route("/front-mask-image")
+  .post(upload.single("image"), addFrontMaskImage);
 
 router
   .route("/front-mask-image/:id")

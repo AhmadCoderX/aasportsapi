@@ -142,7 +142,8 @@ const addBackText = async (req, res) => {
 
 const addFrontMaskImage = async (req, res) => {
   try {
-    const { custom_product_id, title, src } = req.body;
+    const { custom_product_id, title } = req.body;
+    const src = req.file.path;
     const addedMaskImage = await customService.addFrontMaskImage({
       custom_product_id,
       title,
@@ -242,7 +243,6 @@ const updateFrontText = async (req, res) => {
       fill,
       stroke,
       fontFamily,
-      id,
     } = req.body;
     const { front_text_id } = req.params;
     const updatedText = await customService.updateFrontText({
@@ -259,7 +259,6 @@ const updateFrontText = async (req, res) => {
       fill,
       stroke,
       fontFamily,
-      id,
       front_text_id,
     });
     res.status(201).json(updatedText);
@@ -294,7 +293,6 @@ const updateBackText = async (req, res) => {
       fill,
       stroke,
       fontFamily,
-      id,
     } = req.body;
     const { back_text_id } = req.params;
     const updatedText = await customService.updateBackText({
@@ -311,7 +309,6 @@ const updateBackText = async (req, res) => {
       fill,
       stroke,
       fontFamily,
-      id,
       back_text_id,
     });
     res.status(201).json(updatedText);

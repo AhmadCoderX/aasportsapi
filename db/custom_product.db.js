@@ -37,15 +37,15 @@ const updateFrontPathDb = async ({
   id,
 }) => {
   const { rows: updatedPath } = await pool.query(
-    "UPDATE c_front_objects SET title = $1, type = $2, path = $3, color = $4, id = $5 WHERE front_object_id = $6 RETURNING *",
-    [title, type, path, color, id, front_object_id]
+    "UPDATE c_front_objects SET title = $1, type = $2, path = $3, color = $4 WHERE id = $5 RETURNING *",
+    [title, type, path, color, id]
   );
   return updatedPath;
 };
 
 const deleteFrontPathDb = async ({ front_object_id }) => {
   const { rows: deletedPath } = await pool.query(
-    "DELETE FROM c_front_objects WHERE front_object_id = $1 RETURNING *",
+    "DELETE FROM c_front_objects WHERE id = $1 RETURNING *",
     [front_object_id]
   );
   return deletedPath;
@@ -75,15 +75,15 @@ const updateBackPathDb = async ({
   id,
 }) => {
   const { rows: updatedPath } = await pool.query(
-    "UPDATE c_back_objects SET title = $1, type = $2, path = $3, color = $4, id = $5 WHERE back_object_id = $6 RETURNING *",
-    [title, type, path, color, id, back_object_id]
+    "UPDATE c_back_objects SET title = $1, type = $2, path = $3, color = $4 WHERE id = $5 RETURNING *",
+    [title, type, path, color, id]
   );
   return updatedPath;
 };
 
 const deleteBackPathDb = async ({ back_object_id }) => {
   const { rows: deletedPath } = await pool.query(
-    "DELETE FROM c_back_objects WHERE back_object_id = $1 RETURNING *",
+    "DELETE FROM c_back_objects WHERE id = $1 RETURNING *",
     [back_object_id]
   );
   return deletedPath;
@@ -143,11 +143,10 @@ const updateFrontTextDb = async ({
   fill,
   stroke,
   fontFamily,
-  id,
   front_text_id,
 }) => {
   const { rows: updatedText } = await pool.query(
-    "UPDATE c_front_text SET y = $1,  x=$2,  title=$3,  text=$4,  strokeWidth=$5,  fontSize=$6,  draggable=$7,  align=$8,  width=$9,  height=$10,  fill=$11,  stroke=$12,  fontFamily=$13,  id=$14 WHERE front_text_id = $15 RETURNING *",
+    "UPDATE c_front_text SET y = $1,  x=$2,  title=$3,  text=$4,  strokeWidth=$5,  fontSize=$6,  draggable=$7,  align=$8,  width=$9,  height=$10,  fill=$11,  stroke=$12,  fontFamily=$13 WHERE id=$14 RETURNING *",
     [
       y,
       x,
@@ -162,7 +161,6 @@ const updateFrontTextDb = async ({
       fill,
       stroke,
       fontFamily,
-      id,
       front_text_id,
     ]
   );
@@ -171,7 +169,7 @@ const updateFrontTextDb = async ({
 
 const deleteFrontTextDb = async ({ front_text_id }) => {
   const { rows: deletedText } = await pool.query(
-    "DELETE FROM c_front_text WHERE front_text_id = $1 RETURNING *",
+    "DELETE FROM c_front_text WHERE id = $1 RETURNING *",
     [front_text_id]
   );
   return deletedText;
@@ -231,11 +229,10 @@ const updateBackTextDb = async ({
   fill,
   stroke,
   fontFamily,
-  id,
   back_text_id,
 }) => {
   const { rows: updatedText } = await pool.query(
-    "UPDATE c_back_text SET y = $1,  x=$2,  title=$3,  text=$4,  strokeWidth=$5,  fontSize=$6,  draggable=$7,  align=$8,  width=$9,  height=$10,  fill=$11,  stroke=$12,  fontFamily=$13,  id=$14 WHERE back_text_id = $15 RETURNING *",
+    "UPDATE c_back_text SET y = $1,  x=$2,  title=$3,  text=$4,  strokeWidth=$5,  fontSize=$6,  draggable=$7,  align=$8,  width=$9,  height=$10,  fill=$11,  stroke=$12,  fontFamily = $13 WHERE id = $14 RETURNING *",
     [
       y,
       x,
@@ -250,7 +247,6 @@ const updateBackTextDb = async ({
       fill,
       stroke,
       fontFamily,
-      id,
       back_text_id,
     ]
   );
@@ -259,7 +255,7 @@ const updateBackTextDb = async ({
 
 const deleteBackTextDb = async ({ back_text_id }) => {
   const { rows: deletedText } = await pool.query(
-    "DELETE FROM c_back_text WHERE back_text_id = $1 RETURNING *",
+    "DELETE FROM c_back_text WHERE id = $1 RETURNING *",
     [back_text_id]
   );
   return deletedText;
