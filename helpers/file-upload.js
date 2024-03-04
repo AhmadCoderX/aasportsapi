@@ -6,7 +6,10 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, "..", "uploads")); // Save images in uploads folder
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    const originalFilename = file.originalname;
+    const uniqueFileName = Date.now() + "-" + originalFilename;
+    req.imageName = uniqueFileName;
+    cb(null, uniqueFileName); // Generate unique filename with timestamp
   },
 });
 

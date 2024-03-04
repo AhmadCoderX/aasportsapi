@@ -143,11 +143,12 @@ const addBackText = async (req, res) => {
 const addFrontMaskImage = async (req, res) => {
   try {
     const { custom_product_id, title } = req.body;
-    const src = req.file.path;
+    const src = req.imageName;
+    const imageUrl = `http://localhost:8000/uploads/${src}`;
     const addedMaskImage = await customService.addFrontMaskImage({
       custom_product_id,
       title,
-      src,
+      src: imageUrl,
     });
     res.status(201).json(addedMaskImage);
   } catch (error) {
