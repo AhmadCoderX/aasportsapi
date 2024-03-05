@@ -1,4 +1,5 @@
 const {
+  getAllCategoriesDb,
   getParentCategoriesDb,
   getSubcategoriesDb,
   createCategoryDb,
@@ -7,6 +8,14 @@ const {
 } = require("../db/category.db");
 const { ErrorHandler } = require("../helpers/error");
 class CategoryService {
+  getAllCategories = async () => {
+    try {
+      return await getAllCategoriesDb();
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
   getParentCategories = async () => {
     try {
       return await getParentCategoriesDb();

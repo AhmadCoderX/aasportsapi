@@ -305,12 +305,16 @@ const updateBackMaskImageDb = async ({ title, src, id }) => {
   return updatedImage;
 };
 
-const deleteBackMaskImageDb = async ({ id }) => {
+const deleteBackMaskImageDb = async ({ custom_product_id }) => {
   const { rows: deletedImage } = await pool.query(
-    "DELETE FROM back_mask_image WHERE id = $1 RETURNING *",
-    [id]
+    "DELETE FROM back_mask_image WHERE custom_product_id = $1 RETURNING *",
+    [custom_product_id]
   );
-  return deletedImage;
+  if (deletedImage && deletedImage.length > 0) {
+    return deletedImage[0];
+  } else {
+    throw new Error("No rows deleted. Custom product not found.");
+  }
 };
 
 const getCustomProductDb = async ({ c_id }) => {

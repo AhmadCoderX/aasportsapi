@@ -70,7 +70,10 @@ router
   .put(updateFrontMaskImage)
   .delete(deleteFrontMaskImage);
 
-router.route("/back-mask-image").post(addBackMaskImage);
+router
+  .route("/back-mask-image")
+  .post(upload.single("image"), addBackMaskImage)
+  .delete(deleteBackMaskImage);
 
 router
   .route("/back-mask-image/:id")

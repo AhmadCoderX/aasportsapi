@@ -1,5 +1,10 @@
 const categoryService = require("../services/category.service");
 
+const getAllCategories = async (req, res) => {
+  const categories = await categoryService.getAllCategories();
+  res.status(200).json(categories);
+};
+
 const getParentCategories = async (req, res) => {
   const categories = await categoryService.getParentCategories();
   res.json(categories);
@@ -35,6 +40,7 @@ const updateCategory = async (req, res) => {
 };
 
 module.exports = {
+  getAllCategories,
   getParentCategories,
   getSubcategories,
   createNewCategory,

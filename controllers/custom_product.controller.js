@@ -159,7 +159,8 @@ const addFrontMaskImage = async (req, res) => {
 
 const addBackMaskImage = async (req, res) => {
   try {
-    const { custom_product_id, title, src } = req.body;
+    const { custom_product_id, title } = req.body;
+    const src = req.imageName;
     const addedMaskImage = await customService.addBackMaskImage({
       custom_product_id,
       title,
@@ -381,11 +382,21 @@ const updateBackMaskImage = async (req, res) => {
 };
 const deleteBackMaskImage = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedImage = await customService.deleteBackMaskImage({ id });
+    const { custom_product_id } = req.body;
+    const deletedImage = await customService.deleteBackMaskImage({
+      custom_product_id,
+    });
+
+    if (!deletedImage) {
+      // Handle case where deletion failed or no image found
+      return res.status(404).json({ message: "Mask image not found" });
+    }
+    const filePath = path.join(process.cwd(), "uploads", deletedImage?.src);
+    fs.unlinkSync(filePath);
+
     res.status(200).json(deletedImage);
   } catch (error) {
-    res.status(500).json(error);
+    throw new ErrorHandler(error.statusCode, error.message);
   }
 };
 

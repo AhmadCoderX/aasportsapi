@@ -1,5 +1,12 @@
 const pool = require("../config/db");
 
+const getAllCategoriesDb = async () => {
+  const { rows: categories } = await pool.query(
+    "SELECT category.*, subcat_count FROM category LEFT JOIN ( SELECT parent_category_id, COUNT(*) AS subcat_count FROM category GROUP BY parent_category_id ) subcat_counts ON subcat_counts.parent_category_id = category.id "
+  );
+  return categories;
+};
+
 const getParentCategoriesDb = async () => {
   const { rows: categories } = await pool.query(
     "SELECT category.*, subcat_count FROM category LEFT JOIN ( SELECT parent_category_id, COUNT(*) AS subcat_count FROM category GROUP BY parent_category_id ) subcat_counts ON subcat_counts.parent_category_id = category.id WHERE category.parent_category_id IS NULL"
@@ -44,6 +51,7 @@ const getCategoryProductsDb = async ({ id }) => {
 };
 
 module.exports = {
+  getAllCategoriesDb,
   getParentCategoriesDb,
   getSubcategoriesDb,
   createCategoryDb,
