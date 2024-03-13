@@ -1,6 +1,10 @@
 const {
   getAllCustomProductsDb,
   createCustomProductDb,
+  updateCustomProductDb,
+  deleteCustomProductDb,
+  addFrontThumbImageDb,
+  addBackThumbImageDb,
   addFrontPathDb,
   addBackPathDb,
   AddFrontTextDb,
@@ -40,6 +44,38 @@ class customProductService {
   createCustomProduct = async (data) => {
     try {
       return await createCustomProductDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  updateCustomProduct = async (data) => {
+    try {
+      return await updateCustomProductDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  deleteCustomProduct = async (data) => {
+    try {
+      return await deleteCustomProductDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  addFrontThumbImage = async (data) => {
+    try {
+      return await addFrontThumbImageDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  addBackThumbImage = async (data) => {
+    try {
+      return await addBackThumbImageDb(data);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }

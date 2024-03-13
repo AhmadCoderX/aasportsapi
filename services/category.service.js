@@ -4,6 +4,7 @@ const {
   getSubcategoriesDb,
   createCategoryDb,
   updateCategoryDb,
+  deleteCategoryDb,
   getCategoryProductsDb,
 } = require("../db/category.db");
 const { ErrorHandler } = require("../helpers/error");
@@ -51,6 +52,14 @@ class CategoryService {
   updateCategory = async (data) => {
     try {
       return await updateCategoryDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  deleteCategory = async (id) => {
+    try {
+      return await deleteCategoryDb(id);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }

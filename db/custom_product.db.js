@@ -5,12 +5,49 @@ const getAllCustomProductsDb = async () => {
   return product;
 };
 
-const createCustomProductDb = async ({ product_name, sku }) => {
+const createCustomProductDb = async ({ product_name, sku, category_id }) => {
   const { rows: createdProduct } = await pool.query(
-    "INSERT INTO custom_product(product_name, sku) VALUES ($1, $2) RETURNING *",
-    [product_name, sku]
+    "INSERT INTO custom_product(product_name, sku, category_id) VALUES ($1, $2, $3) RETURNING *",
+    [product_name, sku, category_id]
   );
   return createdProduct;
+};
+
+const updateCustomProductDb = async ({
+  product_name,
+  sku,
+  category_id,
+  id,
+}) => {
+  const { rows: updatedProduct } = await pool.query(
+    "UPDATE custom_product SET product_name = $1, sku = $2, category_id = $3 WHERE c_id = $4 RETURNING *",
+    [product_name, sku, category_id, id]
+  );
+  return updatedProduct;
+};
+
+const deleteCustomProductDb = async ({ id }) => {
+  const { rows: deletedProduct } = await pool.query(
+    "DELETE FROM custom_product WHERE c_id = $1 RETURNING *",
+    [id]
+  );
+  return deletedProduct;
+};
+
+const addFrontThumbImageDb = async ({ front_image_src }) => {
+  const { rows: updatedProduct } = await pool.query(
+    "UPDATE custom_product SET front_image_src = $1 WHERE c_id = $2 RETURNING *",
+    [front_image_src, id]
+  );
+  return updatedProduct;
+};
+
+const addBackThumbImageDb = async ({ back_image_src }) => {
+  const { rows: updatedProduct } = await pool.query(
+    "UPDATE custom_product SET back_image_src = $1 WHERE c_id = $2 RETURNING *",
+    [back_image_src, id]
+  );
+  return updatedProduct;
 };
 
 const addFrontPathDb = async ({
@@ -319,7 +356,7 @@ const deleteBackMaskImageDb = async ({ custom_product_id }) => {
 
 const getCustomProductDb = async ({ c_id }) => {
   const { rows: customProduct } = await pool.query(
-    "SELECT cp.product_name AS name, ( SELECT jsonb_build_object( 'title', 'frontMaskImage', 'type', 'image', 'src', fmi.src ) FROM front_mask_image fmi WHERE fmi.custom_product_id = cp.c_id LIMIT 1 ) AS frontMaskImage, ( SELECT jsonb_build_object( 'title', 'backMaskImage', 'type', 'image', 'src', bmi.src ) FROM back_mask_image bmi WHERE bmi.custom_product_id = cp.c_id LIMIT 1 ) AS backMaskImage, ( SELECT jsonb_agg( jsonb_build_object( 'title', fo.title, 'type', fo.type, 'path', fo.path, 'color', fo.color, 'id', fo.id )) FROM c_front_objects fo WHERE fo.custom_product_id = cp.c_id ) AS frontObjects,(SELECT jsonb_agg( jsonb_build_object( 'title', bo.title, 'type', bo.type, 'path', bo.path, 'color', bo.color, 'id', bo.id )) FROM c_back_objects bo WHERE bo.custom_product_id = cp.c_id ) AS backObjects, ( SELECT jsonb_agg( jsonb_build_object( 'y', ft.y, 'x', ft.x, 'title', ft.title, 'text', ft.text, 'strokeWidth', ft.strokeWidth, 'fontSize', ft.fontSize, 'draggable', ft.draggable, 'align', ft.align, 'width', ft.width, 'height', ft.height, 'fill', ft.fill, 'stroke', ft.stroke, 'fontFamily', ft.fontFamily, 'id', ft.id )) FROM c_front_text ft WHERE ft.custom_product_id = cp.c_id ) AS frontText, ( SELECT jsonb_agg( jsonb_build_object( 'y', bt.y, 'x', bt.x, 'title', bt.title, 'text', bt.text, 'strokeWidth', bt.strokeWidth, 'fontSize', bt.fontSize, 'draggable', bt.draggable, 'align', bt.align, 'width', bt.width, 'height', bt.height, 'fill', bt.fill, 'stroke', bt.stroke, 'fontFamily', bt.fontFamily, 'id', bt.id )) FROM c_back_text bt WHERE bt.custom_product_id = cp.c_id ) AS backText FROM custom_product cp WHERE cp.c_id = $1",
+    "SELECT cp.*, ( SELECT jsonb_build_object( 'title', 'frontMaskImage', 'type', 'image', 'src', fmi.src ) FROM front_mask_image fmi WHERE fmi.custom_product_id = cp.c_id LIMIT 1 ) AS frontMaskImage, ( SELECT jsonb_build_object( 'title', 'backMaskImage', 'type', 'image', 'src', bmi.src ) FROM back_mask_image bmi WHERE bmi.custom_product_id = cp.c_id LIMIT 1 ) AS backMaskImage, ( SELECT jsonb_agg( jsonb_build_object( 'title', fo.title, 'type', fo.type, 'path', fo.path, 'color', fo.color, 'id', fo.id )) FROM c_front_objects fo WHERE fo.custom_product_id = cp.c_id ) AS frontObjects,(SELECT jsonb_agg( jsonb_build_object( 'title', bo.title, 'type', bo.type, 'path', bo.path, 'color', bo.color, 'id', bo.id )) FROM c_back_objects bo WHERE bo.custom_product_id = cp.c_id ) AS backObjects, ( SELECT jsonb_agg( jsonb_build_object( 'y', ft.y, 'x', ft.x, 'title', ft.title, 'text', ft.text, 'strokeWidth', ft.strokeWidth, 'fontSize', ft.fontSize, 'draggable', ft.draggable, 'align', ft.align, 'width', ft.width, 'height', ft.height, 'fill', ft.fill, 'stroke', ft.stroke, 'fontFamily', ft.fontFamily, 'id', ft.id )) FROM c_front_text ft WHERE ft.custom_product_id = cp.c_id ) AS frontText, ( SELECT jsonb_agg( jsonb_build_object( 'y', bt.y, 'x', bt.x, 'title', bt.title, 'text', bt.text, 'strokeWidth', bt.strokeWidth, 'fontSize', bt.fontSize, 'draggable', bt.draggable, 'align', bt.align, 'width', bt.width, 'height', bt.height, 'fill', bt.fill, 'stroke', bt.stroke, 'fontFamily', bt.fontFamily, 'id', bt.id )) FROM c_back_text bt WHERE bt.custom_product_id = cp.c_id ) AS backText FROM custom_product cp WHERE cp.c_id = $1",
     [c_id]
   );
   return customProduct[0];
@@ -375,6 +412,10 @@ const getAllUserCustomProductDb = async ({ customer_id }) => {
 module.exports = {
   getAllCustomProductsDb,
   createCustomProductDb,
+  updateCustomProductDb,
+  deleteCustomProductDb,
+  addFrontThumbImageDb,
+  addBackThumbImageDb,
   addFrontPathDb,
   addBackPathDb,
   AddFrontTextDb,

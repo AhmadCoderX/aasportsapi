@@ -34,12 +34,20 @@ const createCategoryDb = async ({
   return newCategory[0];
 };
 
-const updateCategoryDb = async ({ new_name, id, description }) => {
+const updateCategoryDb = async ({ new_name, id, description, parent_id }) => {
   const { rows: updatedCategory } = await pool.query(
-    "UPDATE category SET name = $1, description = $2 WHERE id = $3 RETURNING *",
-    [new_name, description, id]
+    "UPDATE category SET name = $1, description = $2, parent_category_id = $3 WHERE id = $4 RETURNING *",
+    [new_name, description, parent_id, id]
   );
   return updatedCategory[0];
+};
+
+const deleteCategoryDb = async ({ id }) => {
+  const { rows: deletedCategory } = await pool.query(
+    "DELETE FROM category WHERE id = $1 RETURNING *",
+    [id]
+  );
+  return deletedCategory[0];
 };
 
 const getCategoryProductsDb = async ({ id }) => {
@@ -56,5 +64,6 @@ module.exports = {
   getSubcategoriesDb,
   createCategoryDb,
   updateCategoryDb,
+  deleteCategoryDb,
   getCategoryProductsDb,
 };

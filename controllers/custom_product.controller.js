@@ -14,14 +14,72 @@ const getAllCustomProducts = async (req, res) => {
 
 const createCustomProduct = async (req, res) => {
   try {
-    const { product_name, sku } = req.body;
+    const { product_name, sku, category_id } = req.body;
     const createdProduct = await customService.createCustomProduct({
       product_name,
       sku,
+      category_id,
     });
     res.status(201).json(createdProduct);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json(error.message);
+  }
+};
+
+const updateCustomProduct = async (req, res) => {
+  try {
+    const { product_name, sku, category_id } = req.body;
+    const { c_id } = req.params;
+    const updatedProduct = await customService.updateCustomProduct({
+      product_name,
+      sku,
+      category_id,
+      id: c_id,
+    });
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json(error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
+const deleteCustomProduct = async (req, res) => {
+  try {
+    const { c_id } = req.params;
+    const deletedProduct = await customService.deleteCustomProduct({
+      id: c_id,
+    });
+    res.status(200).json(deletedProduct);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+const addFrontThumbImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const front_image_src = req.imageNames[0];
+    const updatedProduct = await customService.addFrontThumbImage({
+      id,
+      front_image_src,
+    });
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+const addBackThumbImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const back_image_src = req.imageNames[0];
+    const updatedProduct = await customService.addBackThumbImage({
+      id,
+      back_image_src,
+    });
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    res.status(500).json(error.message);
   }
 };
 
@@ -145,7 +203,7 @@ const addBackText = async (req, res) => {
 const addFrontMaskImage = async (req, res) => {
   try {
     const { custom_product_id, title } = req.body;
-    const src = req.imageName;
+    const src = req.imageNames[0];
     const addedMaskImage = await customService.addFrontMaskImage({
       custom_product_id,
       title,
@@ -160,7 +218,7 @@ const addFrontMaskImage = async (req, res) => {
 const addBackMaskImage = async (req, res) => {
   try {
     const { custom_product_id, title } = req.body;
-    const src = req.imageName;
+    const src = req.imageNames[0];
     const addedMaskImage = await customService.addBackMaskImage({
       custom_product_id,
       title,
@@ -478,6 +536,10 @@ const getALlUserCustomProduct = async (req, res) => {
 module.exports = {
   getAllCustomProducts,
   createCustomProduct,
+  updateCustomProduct,
+  deleteCustomProduct,
+  addFrontThumbImage,
+  addBackThumbImage,
   addFrontPath,
   addBackPath,
   addFrontText,

@@ -2,6 +2,10 @@ const router = require("express").Router();
 const {
   getAllCustomProducts,
   createCustomProduct,
+  updateCustomProduct,
+  deleteCustomProduct,
+  addFrontThumbImage,
+  addBackThumbImage,
   addFrontPath,
   addBackPath,
   addFrontText,
@@ -30,7 +34,19 @@ const {
 const { upload } = require("../helpers/file-upload");
 
 router.route("/").get(getAllCustomProducts).post(createCustomProduct);
-router.route("/:c_id").get(getCustomProduct);
+router
+  .route("/:c_id")
+  .get(getCustomProduct)
+  .put(updateCustomProduct)
+  .delete(deleteCustomProduct);
+
+router
+  .route("/front-thumb-image/:id")
+  .post(upload.single("image"), addFrontThumbImage);
+
+router
+  .route("/back-thumb-image/:id")
+  .post(upload.single("image"), addBackThumbImage);
 
 router.route("/front-path").post(addFrontPath);
 

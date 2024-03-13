@@ -162,6 +162,11 @@ ALTER TABLE custom_product
 ADD COLUMN front_image_src TEXT, 
 ADD COLUMN back_image_src TEXT;
 
+-- Adding category id in the custom_product table
+ALTER TABLE custom_product
+ADD COLUMN category_id UUID REFERENCES category(id);
+
+
 
 CREATE TABLE c_front_objects (
     front_object_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),

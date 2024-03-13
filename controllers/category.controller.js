@@ -29,14 +29,21 @@ const getCategoryProducts = async (req, res) => {
 };
 
 const updateCategory = async (req, res) => {
-  const { new_name, description } = req.body;
+  const { new_name, description, parent_id } = req.body;
   const { id } = req.params;
   const updatedCategory = await categoryService.updateCategory({
     new_name,
     id,
     description,
+    parent_id,
   });
   res.status(200).json(updatedCategory);
+};
+
+const deleteCategory = async (req, res) => {
+  const { id } = req.params;
+  const deletedCategory = await categoryService.deleteCategory({ id });
+  res.status(200).json(deletedCategory);
 };
 
 module.exports = {
@@ -45,5 +52,6 @@ module.exports = {
   getSubcategories,
   createNewCategory,
   updateCategory,
+  deleteCategory,
   getCategoryProducts,
 };
