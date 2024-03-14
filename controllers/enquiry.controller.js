@@ -1,7 +1,10 @@
 const transporter = require("../helpers/sendEnquiryMail");
+const fs = require("fs");
 
 const sendEnquiry = async (req, res) => {
   const { recipient, subject, text } = req.body; // Destructure request body
+  const frontCanvasBlob = req.files.frontCanvasImage[0].buffer; // assuming first element
+  const backCanvasBlob = req.files.backCanvasImage[0].buffer; // assuming first element
 
   try {
     const message = {
@@ -9,6 +12,16 @@ const sendEnquiry = async (req, res) => {
       to: recipient,
       subject: subject,
       html: `<h3>${text}</h3>`,
+      attachments: [
+        {
+          filename: "frontCanvasImage.png",
+          content: frontCanvasBlob,
+        },
+        {
+          filename: "backCanvasImage.png",
+          content: backCanvasBlob,
+        },
+      ],
     };
 
     const info = await transporter.sendMail(message);
