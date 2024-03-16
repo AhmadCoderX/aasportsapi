@@ -14,19 +14,16 @@ const {
 } = require("../controllers/products.controller");
 const verifyToken = require("../middleware/verifyToken");
 
-router.route("/").get(getAllProducts).post(verifyToken, createProduct);
+router.route("/").get(getAllProducts).post(createProduct);
 
-router
-  .route("/:id")
-  .get(getProduct)
-  .put(verifyToken, updateProduct)
-  .delete(verifyToken, deleteProduct);
+router.route("/:id").get(getProduct).put(updateProduct).delete(deleteProduct);
+
 // review routes
 router
   .route("/:id/reviews")
   .get(getProductReviews)
-  .post(verifyToken, createProductReview)
-  .put(verifyToken, updateProductReview);
+  .post(createProductReview)
+  .put(updateProductReview);
 
 // secondary image addition routes
 

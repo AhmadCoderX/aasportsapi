@@ -1,44 +1,33 @@
 const pool = require("../config/db");
 
 const getAllProductsDb = async () => {
-  const { rows } = await pool.query("select * from product");
+  const { rows } = await pool.query(
+    "WITH product_reviews AS ( SELECT p.*, JSON_ARRAYAGG(r.*) AS reviews FROM product p LEFT JOIN reviews r ON p.id = r.product_id GROUP BY p.id ) SELECT * FROM product_reviews;"
+  );
   const product = rows;
   return product;
 };
 
-const createProductDb = async ({
-  name,
-  description,
-  product_image_url,
-  category_id,
-  sku,
-}) => {
+const createProductDb = async ({ name, description, category_id, sku }) => {
   const { rows: product } = await pool.query(
-    "INSERT INTO product(name, description, product_image_url, category_id, sku) VALUES($1, $2, $3, $4, $5) RETURNING *",
-    [name, description, product_image_url, category_id, sku]
+    "INSERT INTO product(name, description, category_id, sku) VALUES($1, $2, $3, $4) RETURNING *",
+    [name, description, category_id, sku]
   );
   return product[0];
 };
 
 const getProductDb = async ({ id }) => {
   const { rows: product } = await pool.query(
-    "SELECT * FROM product WHERE product.id = $1",
+    "SELECT p.*, JSON_ARRAYAGG(img.*) AS product_images FROM product p LEFT JOIN product_images img ON p.id = img.product_id WHERE p.id = $1 GROUP BY p.id",
     [id]
   );
   return product[0];
 };
 
-const updateProductDb = async ({
-  name,
-  description,
-  product_image_url,
-  category_id,
-  id,
-  sku,
-}) => {
+const updateProductDb = async ({ name, description, category_id, sku, id }) => {
   const { rows: product } = await pool.query(
-    "UPDATE product set name = $1, description = $2, product_image_url = $3, category_id = $4, sku = $5 WHERE product.id = $5 RETURNING *",
-    [name, description, product_image_url, category_id, id, sku]
+    "UPDATE product set name = $1, description = $2, category_id = $3, sku = $4 WHERE product.id = $5 RETURNING *",
+    [name, description, category_id, sku, id]
   );
   return product[0];
 };

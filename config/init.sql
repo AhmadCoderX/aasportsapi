@@ -52,6 +52,8 @@ CREATE TABLE order_item (
     FOREIGN KEY (order_id) REFERENCES orders(order_id),
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
+-- altered to delete product
+ alter table order_item add column product_id UUID references product(id) on delete set null;
 
 -- Create Customer Table (Assuming you have a customer table)
 CREATE TABLE customer (
@@ -164,7 +166,7 @@ ADD COLUMN back_image_src TEXT;
 
 -- Adding category id in the custom_product table
 ALTER TABLE custom_product
-ADD COLUMN category_id UUID REFERENCES category(id);
+ADD COLUMN category_id UUID REFERENCES category(id) ON DELETE SET NULL;
 
 
 
