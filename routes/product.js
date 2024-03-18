@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { upload } = require("../helpers/file-upload");
 const {
   getProduct,
   createProduct,
@@ -11,6 +12,8 @@ const {
   addSecondaryImage,
   updateSecondaryImage,
   deleteSecondaryImage,
+  addPrimaryImage,
+  updatePrimaryImage,
 } = require("../controllers/products.controller");
 const verifyToken = require("../middleware/verifyToken");
 
@@ -25,12 +28,18 @@ router
   .post(createProductReview)
   .put(updateProductReview);
 
+// Primary Image Addition Routes
+router
+  .route("/:id/primary-image")
+  .post(upload.single("image"), addPrimaryImage)
+  .put(upload.single("image"), updatePrimaryImage);
+
 // secondary image addition routes
 
 router
   .route("/:id/secondary-image")
-  .post(addSecondaryImage)
-  .put(updateSecondaryImage)
+  .post(upload.single("image"), addSecondaryImage)
+  .put(upload.single("image"), updateSecondaryImage)
   .delete(deleteSecondaryImage);
 
 module.exports = router;

@@ -71,11 +71,27 @@ class ProductService {
     }
   };
 
+  addPrimaryProductImage = async (data) => {
+    try {
+      return await addPrimaryImageDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  updatePrimaryImage = async (data) => {
+    try {
+      return await updatePrimaryImageDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
   addSecondaryProductImage = async (data) => {
     try {
       return await addSecondaryImageDb(data);
     } catch (error) {
-      throw new ErrorHandler(err.statusCode, err.message);
+      throw new ErrorHandler(error.statusCode, error.message);
     }
   };
 
@@ -83,7 +99,7 @@ class ProductService {
     try {
       return await updateSecondaryImageDb(data);
     } catch (error) {
-      throw new ErrorHandler(err.statusCode, err.message);
+      throw new ErrorHandler(error.statusCode, error.message);
     }
   };
 
@@ -91,7 +107,7 @@ class ProductService {
     try {
       return await deleteSecondaryImageDb(data);
     } catch (error) {
-      throw new ErrorHandler(err.statusCode, err.message);
+      throw new ErrorHandler(error.statusCode, error.message);
     }
   };
 }
