@@ -18,7 +18,7 @@ const createProductDb = async ({ name, description, category_id, sku }) => {
 
 const getProductDb = async ({ id }) => {
   const { rows: product } = await pool.query(
-    "SELECT p.*, c.name AS category_name, JSON_ARRAYAGG(img.*) AS product_images, JSON_ARRAYAGG(r.*) AS reviews, JSON_ARRAYAGG(tags.*) AS tags FROM product p LEFT JOIN product_images img ON p.id = img.product_id LEFT JOIN reviews r ON p.id = r.product_id LEFT JOIN category c ON c.id = p.category_id LEFT JOIN product_tags tags ON tags.product_id = p.id WHERE p.id = $1 GROUP BY p.id, c.name",
+    "SELECT p.*, c.name AS category_name, (SELECT JSON_ARRAYAGG(img.*) FROM product_images img WHERE img.product_id = p.id) AS product_images, (SELECT JSON_ARRAYAGG(r.*) FROM reviews r WHERE r.product_id = p.id) AS reviews, (SELECT JSON_ARRAYAGG(tags.*) FROM product_tags tags WHERE tags.product_id = p.id) AS tags FROM product p LEFT JOIN category c ON c.id = p.category_id WHERE p.id = $1",
     [id]
   );
   return product[0];
