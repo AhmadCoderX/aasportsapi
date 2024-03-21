@@ -18,7 +18,7 @@ const createProductDb = async ({ name, description, category_id, sku }) => {
 
 const getProductDb = async ({ id }) => {
   const { rows: product } = await pool.query(
-    "SELECT p.*, JSON_ARRAYAGG(img.*) AS product_images FROM product p LEFT JOIN product_images img ON p.id = img.product_id WHERE p.id = $1 GROUP BY p.id",
+    "SELECT p.*, c.name AS category_name, JSON_ARRAYAGG(img.*) AS product_images, JSON_ARRAYAGG(r.*) AS reviews FROM product p LEFT JOIN product_images img ON p.id = img.product_id LEFT JOIN reviews r ON p.id = r.product_id LEFT JOIN category c ON c.id = p.category_id WHERE p.id = $1 GROUP BY p.id, c.name",
     [id]
   );
   return product[0];
@@ -88,6 +88,14 @@ const deleteAllImagesDb = async ({ product_id }) => {
   return deletedImages;
 };
 
+const searchProductDb = async ({ searchTerm }) => {
+  const query = `
+    SELECT p.*, JSON_ARRAYAGG(img.*) AS product_images FROM product p LEFT JOIN product_images img ON p.id = img.product_id WHERE p.name ILIKE $1 OR p.description ILIKE $1 OR p.sku ILIKE $1 GROUP BY p.id`;
+
+  const { rows: product } = await pool.query(query, [`%${searchTerm}%`]);
+  return product;
+};
+
 module.exports = {
   getProductDb,
   getAllProductsDb,
@@ -100,4 +108,5 @@ module.exports = {
   updateSecondaryImageDb,
   deleteSecondaryImageDb,
   deleteAllImagesDb,
+  searchProductDb,
 };

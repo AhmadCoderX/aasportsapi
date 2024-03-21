@@ -41,6 +41,7 @@ const deleteProduct = async (req, res) => {
   const deletedProduct = await productService.removeProduct({ id });
   res.status(200).json(deletedProduct);
 };
+
 const getProductReviews = async (req, res) => {
   const { product_id } = req.body;
   const { id: user_id } = req.body.user;
@@ -69,25 +70,24 @@ const getProductReviews = async (req, res) => {
 };
 
 const createProductReview = async (req, res) => {
-  const { product_id, content, rating } = req.body;
-  const user_id = req.body.user.id;
+  const { product_id, content, rating, name, email } = req.body;
 
   try {
     const result = await pool.query(
-      `INSERT INTO reviews(user_id, product_id, content, rating) 
-       VALUES($1, $2, $3, $4) returning *
+      `INSERT INTO reviews(name, email, product_id, content, rating) 
+       VALUES($1, $2, $3, $4, $5) returning *
       `,
-      [user_id, product_id, content, rating]
+      [name, email, product_id, content, rating]
     );
     res.json(result.rows);
   } catch (error) {
-    res.status(500).json(error.detail);
+    res.status(500).json(error.message);
   }
 };
 
 const updateProductReview = async (req, res) => {
   const { content, rating, id } = req.body;
-
+  // Delete this function later, there's no need for it ❌
   try {
     const result = await pool.query(
       `UPDATE reviews set content = $1, rating = $2 where id = $3 returning *
@@ -181,6 +181,16 @@ const deleteSecondaryImage = async (req, res) => {
   }
 };
 
+const searchProduct = async (req, res) => {
+  const { searchTerm } = req.params;
+  try {
+    const searchResult = await productService.searchProduct({ searchTerm });
+    res.status(200).json(searchResult);
+  } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
+  }
+};
+
 module.exports = {
   getProduct,
   createProduct,
@@ -195,4 +205,5 @@ module.exports = {
   addSecondaryImage,
   updateSecondaryImage,
   deleteSecondaryImage,
+  searchProduct,
 };

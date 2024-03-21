@@ -23,6 +23,18 @@ CREATE TABLE product (
     FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
+-- Creating product_tags table
+CREATE TABLE product_tags (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    product_id UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
+    tag VARCHAR(255)
+);
+
+-- dummy tags insertion
+INSERT INTO product_tags (product_id, tag) VALUES('c5f795b5-ec32-4048-bd01-7428a91a892e', 'Piano');
+INSERT INTO product_tags(product_id, tag) VALUES('c5f795b5-ec32-4048-bd01-7428a91a892e', 'Ballpoint Pen');
+INSERT INTO product_tags(product_id, tag) VALUES('c5f795b5-ec32-4048-bd01-7428a91a892e', 'Multiple Colors');
+
 -- Create Product_Item Table
 CREATE TABLE product_item (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -135,12 +147,19 @@ CREATE TABLE orders
 -- Reviews Table 
 CREATE TABLE reviews (
   id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES customer(id) ON DELETE CASCADE,
+  name VARCHAR(255),
+  email VARCHAR(100),
   product_id UUID NOT NULL REFERENCES product(id) ON DELETE CASCADE,
   content text NOT NULL,
   rating integer NOT NULL CHECK (rating >= 1 AND rating <= 5),
   date timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ALTER TABLE reviews ADD COLUMN name VARCHAR(255);
+-- ALTER TABLE
+-- verceldb=> ALTER TABLE reviews ADD COLUMN email VARCHAR(100);
+-- ALTER TABLE
+-- verceldb=> ALTER TABLE reviews DROP COLUMN user_id;
 
 CREATE TYPE prod_img_type AS ENUM ('primary', 'secondary');
 

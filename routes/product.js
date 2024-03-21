@@ -14,6 +14,7 @@ const {
   deleteSecondaryImage,
   addPrimaryImage,
   updatePrimaryImage,
+  searchProduct,
 } = require("../controllers/products.controller");
 const verifyToken = require("../middleware/verifyToken");
 
@@ -41,5 +42,8 @@ router
   .post(upload.single("image"), addSecondaryImage)
   .put(upload.single("image"), updateSecondaryImage)
   .delete(deleteSecondaryImage);
+
+// Product Search API
+router.route("/search/:searchTerm").get(searchProduct);
 
 module.exports = router;
