@@ -11,7 +11,8 @@ const getParentCategories = async (req, res) => {
 };
 
 const getSubcategories = async (req, res) => {
-  const categories = await categoryService.getSubcategories(req.body);
+  const { parent_id } = req.params;
+  const categories = await categoryService.getSubcategories({ parent_id });
   res.json(categories);
 };
 

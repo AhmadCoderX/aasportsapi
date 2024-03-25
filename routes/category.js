@@ -11,7 +11,7 @@ const {
 
 router.route("/all").get(getAllCategories);
 router.route("/").get(getParentCategories).post(createNewCategory);
-router.route("/sub-categories").get(getSubcategories);
+router.route("/sub-categories/:parent_id").get(getSubcategories);
 router
   .route("/:id")
   .get(getCategoryProducts)
