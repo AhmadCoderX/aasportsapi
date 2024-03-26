@@ -11,6 +11,9 @@ const {
   deleteSecondaryImageDb,
   deleteAllImagesDb,
   searchProductDb,
+  addProductTagDb,
+  updateProductTagDb,
+  deleteProductTagDb,
 } = require("../db/products.db");
 const { ErrorHandler } = require("../helpers/error");
 
@@ -115,6 +118,30 @@ class ProductService {
   searchProduct = async (query) => {
     try {
       return await searchProductDb(query);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  addProductTag = async (data) => {
+    try {
+      return await addProductTagDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  updateProductTag = async (data) => {
+    try {
+      return await updateProductTagDb(data);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  deleteProductTag = async (data) => {
+    try {
+      return await deleteProductTagDb(data);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }

@@ -6,6 +6,7 @@ const {
   updateCategoryDb,
   deleteCategoryDb,
   getCategoryProductsDb,
+  addCategoryImageDb,
 } = require("../db/category.db");
 const { ErrorHandler } = require("../helpers/error");
 class CategoryService {
@@ -60,6 +61,14 @@ class CategoryService {
   deleteCategory = async (id) => {
     try {
       return await deleteCategoryDb(id);
+    } catch (error) {
+      throw new ErrorHandler(error.statusCode, error.message);
+    }
+  };
+
+  addCategoryImage = async (data) => {
+    try {
+      return await addCategoryImageDb(data);
     } catch (error) {
       throw new ErrorHandler(error.statusCode, error.message);
     }

@@ -8,12 +8,13 @@ const getAllProducts = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  const { name, description, category_id, sku } = req.body;
+  const { name, description, category_id, sku, type } = req.body;
   const newProduct = await productService.addProduct({
     name,
     description,
     category_id,
     sku,
+    type,
   });
   res.status(200).json(newProduct);
 };
@@ -24,7 +25,7 @@ const getProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  const { name, description, category_id, sku } = req.body;
+  const { name, description, category_id, sku, type } = req.body;
   const { id } = req.params;
   const updatedProduct = await productService.updateProduct({
     name,
@@ -32,6 +33,7 @@ const updateProduct = async (req, res) => {
     category_id,
     id,
     sku,
+    type,
   });
   res.status(200).json(updatedProduct);
 };
@@ -191,6 +193,44 @@ const searchProduct = async (req, res) => {
   }
 };
 
+const addProductTag = async (req, res) => {
+  const { product_id, tag } = req.body;
+  try {
+    const addedTag = await productService.addProductTag({
+      product_id,
+      tag,
+    });
+    res.status(201).json(addedTag);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+const updateProductTag = async (req, res) => {
+  const { tag, tag_id } = req.body;
+  try {
+    const updatedTag = await productService.updateProductTag({
+      tag,
+      tag_id,
+    });
+    res.status(200).json(updatedTag);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+const deleteProductTag = async (req, res) => {
+  const { tag_id } = req.body;
+  try {
+    const deletedTag = await productService.deleteProductTag({
+      tag_id,
+    });
+    res.status(200).json(deletedTag);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 module.exports = {
   getProduct,
   createProduct,
@@ -206,4 +246,7 @@ module.exports = {
   updateSecondaryImage,
   deleteSecondaryImage,
   searchProduct,
+  addProductTag,
+  updateProductTag,
+  deleteProductTag,
 };

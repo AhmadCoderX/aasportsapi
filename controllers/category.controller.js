@@ -1,4 +1,5 @@
 const categoryService = require("../services/category.service");
+const { upload } = require("../helpers/file-upload");
 
 const getAllCategories = async (req, res) => {
   const categories = await categoryService.getAllCategories();
@@ -47,6 +48,20 @@ const deleteCategory = async (req, res) => {
   res.status(200).json(deletedCategory);
 };
 
+const addCategoryImage = async (req, res) => {
+  const { category_id } = req.body;
+  const image_url = req.imageNames[0];
+  try {
+    const updatedCategory = await categoryService.addCategoryImage({
+      image_url,
+      category_id,
+    });
+    res.status(200).json(updatedCategory);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
 module.exports = {
   getAllCategories,
   getParentCategories,
@@ -55,4 +70,5 @@ module.exports = {
   updateCategory,
   deleteCategory,
   getCategoryProducts,
+  addCategoryImage,
 };

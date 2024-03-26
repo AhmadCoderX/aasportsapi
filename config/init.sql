@@ -12,6 +12,8 @@ FOREIGN KEY (parent_category_id) REFERENCES category(id) ON DELETE CASCADE;
 
 ALTER TABLE category ALTER COLUMN id TYPE VARCHAR(255); -- Optional: Change type to VARCHAR(255) if needed
 
+ALTER TABLE category ADD COLUMN category_img_url TEXT;
+
 
 -- Create Product Table
 CREATE TABLE product (
@@ -19,9 +21,11 @@ CREATE TABLE product (
     category_id UUID,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    product_image_url VARCHAR(255),
+    type VARCHAR(20) CHECK (type IN ('single', 'package'))
     FOREIGN KEY (category_id) REFERENCES category(id)
 );
+
+
 
 -- Creating product_tags table
 CREATE TABLE product_tags (
@@ -34,17 +38,6 @@ CREATE TABLE product_tags (
 INSERT INTO product_tags (product_id, tag) VALUES('c5f795b5-ec32-4048-bd01-7428a91a892e', 'Piano');
 INSERT INTO product_tags(product_id, tag) VALUES('c5f795b5-ec32-4048-bd01-7428a91a892e', 'Ballpoint Pen');
 INSERT INTO product_tags(product_id, tag) VALUES('c5f795b5-ec32-4048-bd01-7428a91a892e', 'Multiple Colors');
-
--- Create Product_Item Table
-CREATE TABLE product_item (
-    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    product_id UUID,
-    SKU VARCHAR(50) NOT NULL,
-    qty_in_stock INT NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    product_image_url VARCHAR(255),
-    FOREIGN KEY (product_id) REFERENCES product(id)
-);
 
 -- Create Order Table mm
 CREATE TABLE order_table (

@@ -58,6 +58,14 @@ const getCategoryProductsDb = async ({ id }) => {
   return category;
 };
 
+const addCategoryImageDb = async ({ image_url, category_id }) => {
+  const { rows: category } = await pool.query(
+    "UPDATE category SET category_img_url = $1 WHERE id = $2 RETURNING *",
+    [image_url, category_id]
+  );
+  return category;
+};
+
 module.exports = {
   getAllCategoriesDb,
   getParentCategoriesDb,
@@ -66,4 +74,5 @@ module.exports = {
   updateCategoryDb,
   deleteCategoryDb,
   getCategoryProductsDb,
+  addCategoryImageDb,
 };

@@ -8,10 +8,16 @@ const getAllProductsDb = async () => {
   return product;
 };
 
-const createProductDb = async ({ name, description, category_id, sku }) => {
+const createProductDb = async ({
+  name,
+  description,
+  category_id,
+  sku,
+  type,
+}) => {
   const { rows: product } = await pool.query(
-    "INSERT INTO product(name, description, category_id, sku) VALUES($1, $2, $3, $4) RETURNING *",
-    [name, description, category_id, sku]
+    "INSERT INTO product(name, description, category_id, sku, type) VALUES($1, $2, $3, $4, $5) RETURNING *",
+    [name, description, category_id, sku, type]
   );
   return product[0];
 };
@@ -24,10 +30,17 @@ const getProductDb = async ({ id }) => {
   return product[0];
 };
 
-const updateProductDb = async ({ name, description, category_id, sku, id }) => {
+const updateProductDb = async ({
+  name,
+  description,
+  category_id,
+  sku,
+  id,
+  type,
+}) => {
   const { rows: product } = await pool.query(
-    "UPDATE product set name = $1, description = $2, category_id = $3, sku = $4 WHERE product.id = $5 RETURNING *",
-    [name, description, category_id, sku, id]
+    "UPDATE product set name = $1, description = $2, category_id = $3, sku = $4, type = $5 WHERE product.id = $6 RETURNING *",
+    [name, description, category_id, sku, type, id]
   );
   return product[0];
 };
@@ -96,6 +109,31 @@ const searchProductDb = async ({ searchTerm }) => {
   return product;
 };
 
+// Product Tags CRUD DB FUNCTIONS
+const addProductTagDb = async ({ product_id, tag }) => {
+  const { rows: addedTag } = await pool.query(
+    "INSERT INTO product_tags (product_id, tag) VALUES($1, $2) RETURNING *",
+    [product_id, tag]
+  );
+  return addedTag[0];
+};
+
+const updateProductTagDb = async ({ tag, tag_id }) => {
+  const { rows: updatedTag } = await pool.query(
+    "UPDATE product_tags SET tag = $1 WHERE id = $2 RETURNING *",
+    [tag, tag_id]
+  );
+  return updatedTag[0];
+};
+
+const deleteProductTagDb = async ({ tag_id }) => {
+  const { rows: deletedTag } = await pool.query(
+    "DELETE FROM product_tags WHERE id = $1 RETURNING *",
+    [tag_id]
+  );
+  return deletedTag[0];
+};
+
 module.exports = {
   getProductDb,
   getAllProductsDb,
@@ -109,4 +147,7 @@ module.exports = {
   deleteSecondaryImageDb,
   deleteAllImagesDb,
   searchProductDb,
+  addProductTagDb,
+  updateProductTagDb,
+  deleteProductTagDb,
 };

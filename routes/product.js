@@ -15,8 +15,18 @@ const {
   addPrimaryImage,
   updatePrimaryImage,
   searchProduct,
+  addProductTag,
+  updateProductTag,
+  deleteProductTag,
 } = require("../controllers/products.controller");
 const verifyToken = require("../middleware/verifyToken");
+
+// Product Tags CRUD Routes
+router
+  .route("/tag")
+  .post(addProductTag)
+  .put(updateProductTag)
+  .delete(deleteProductTag);
 
 router.route("/").get(getAllProducts).post(createProduct);
 
