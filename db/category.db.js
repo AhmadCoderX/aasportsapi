@@ -52,7 +52,7 @@ const deleteCategoryDb = async ({ id }) => {
 
 const getCategoryProductsDb = async ({ id }) => {
   const { rows: category } = await pool.query(
-    "SELECT category.*, product_count, products.all_products FROM category LEFT JOIN (SELECT category_id, COUNT(*) AS product_count FROM product GROUP BY category_id) product_counts ON product_counts.category_id = category.id LEFT JOIN (SELECT category_id, json_agg(product.*) AS all_products FROM product GROUP BY category_id) products ON products.category_id = category.id WHERE category.id = $1",
+    "SELECT c.*, product_count, products.all_products FROM category c LEFT JOIN (SELECT category_id, COUNT(*) AS product_count FROM product GROUP BY category_id) product_counts ON product_counts.category_id = c.id LEFT JOIN (SELECT category_id, json_agg(p.*) AS all_products FROM (SELECT p.*, c.name AS category_name, (SELECT JSON_ARRAYAGG(img.*) FROM product_images img WHERE img.product_id = p.id) AS product_images, (SELECT JSON_ARRAYAGG(r.*) FROM reviews r WHERE r.product_id = p.id) AS reviews, (SELECT JSON_ARRAYAGG(tags.*) FROM product_tags tags WHERE tags.product_id = p.id) AS tags FROM product p LEFT JOIN category c ON c.id = p.category_id) p GROUP BY category_id) products ON products.category_id = c.id WHERE c.id = $1",
     [id]
   );
   return category;
