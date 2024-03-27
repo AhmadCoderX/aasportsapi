@@ -2,10 +2,10 @@ const pool = require("../config/db");
 
 const getAllProductsDb = async () => {
   const { rows } = await pool.query(
-    "WITH product_reviews AS ( SELECT p.*, JSON_ARRAYAGG(r.*) AS reviews FROM product p LEFT JOIN reviews r ON p.id = r.product_id GROUP BY p.id ) SELECT * FROM product_reviews;"
+    "WITH product_reviews AS ( SELECT p.*, JSON_ARRAYAGG(r.*) AS reviews FROM product p LEFT JOIN reviews r ON p.id = r.product_id GROUP BY p.id ) SELECT p.*, c.name AS category_name, (SELECT JSON_ARRAYAGG(img.*) FROM product_images img WHERE img.product_id = p.id) AS product_images, (SELECT JSON_ARRAYAGG(tags.*) FROM product_tags tags WHERE tags.product_id = p.id) AS tags FROM product p LEFT JOIN category c ON c.id = p.category_id;"
   );
-  const product = rows;
-  return product;
+  const products = rows;
+  return products;
 };
 
 const createProductDb = async ({

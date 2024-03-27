@@ -1,5 +1,7 @@
 const categoryService = require("../services/category.service");
+const fs = require("fs");
 const { upload } = require("../helpers/file-upload");
+const path = require("path");
 
 const getAllCategories = async (req, res) => {
   const categories = await categoryService.getAllCategories();
@@ -45,6 +47,16 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   const { id } = req.params;
   const deletedCategory = await categoryService.deleteCategory({ id });
+  const { category_img_url } = deletedCategory;
+  const filePath = path.join(__dirname, "..", "uploads", category_img_url);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error("Error deleting file:", err);
+      // If there's an error deleting the file, you may choose to handle it here
+    } else {
+      console.log("File deleted successfully");
+    }
+  });
   res.status(200).json(deletedCategory);
 };
 

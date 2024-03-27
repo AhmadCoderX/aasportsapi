@@ -21,9 +21,11 @@ CREATE TABLE product (
     category_id UUID,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    type VARCHAR(20) CHECK (type IN ('single', 'package'))
-    FOREIGN KEY (category_id) REFERENCES category(id)
+    type VARCHAR(20) CHECK (type IN ('single', 'package')),
+    custom_product_id UUID REFERENCES custom_product(c_id) ON DELETE SET NULL,
+    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL
 );
+
 
 
 
