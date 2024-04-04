@@ -91,6 +91,7 @@ const sendEnquiry = async (req, res) => {
     res.json({ message: "Email sent successfully!", info });
   } catch (error) {
     console.error("Error sending email:", error);
+    throw new Error(error);
     res.status(500).json({ message: "Error sending email" });
   }
 };

@@ -25,8 +25,8 @@ const loginUser = async (req, res) => {
   res.header("auth-token", token);
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    sameSite: process.env.NODE_ENV === "development" ? true : "none",
-    secure: process.env.NODE_ENV === "development" ? false : true,
+    sameSite: false,
+    secure: true,
   });
   res.status(200).json({
     token,

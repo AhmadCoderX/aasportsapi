@@ -195,6 +195,7 @@ const searchProduct = async (req, res) => {
 
 const addProductTag = async (req, res) => {
   const { product_id, tag } = req.body;
+  console.log(product_id, tag);
   try {
     const addedTag = await productService.addProductTag({
       product_id,
@@ -202,6 +203,7 @@ const addProductTag = async (req, res) => {
     });
     res.status(201).json(addedTag);
   } catch (error) {
+    throw new ErrorHandler(error.statusCode, error.message);
     res.status(500).json(error.message);
   }
 };
@@ -221,6 +223,7 @@ const updateProductTag = async (req, res) => {
 
 const deleteProductTag = async (req, res) => {
   const { tag_id } = req.body;
+  console.log(tag_id);
   try {
     const deletedTag = await productService.deleteProductTag({
       tag_id,

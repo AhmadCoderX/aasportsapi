@@ -9,11 +9,12 @@ const swaggerUi = require("swagger-ui-express");
 const payment = require("./payment");
 const customProduct = require("./customProduct");
 const enquiry = require("./enquiry");
+const cors = require("cors");
 
 router.use("/products", product);
 router.use("/users", user);
 router.use("/cart", cart);
-router.use("/auth", auth);
+router.use("/auth", cors(), auth);
 router.use("/category", category);
 router.use("/order", order);
 router.use("/payment", payment);
