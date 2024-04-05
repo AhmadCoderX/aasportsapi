@@ -9,9 +9,14 @@ const { handleError } = require("./helpers/error");
 
 const app = express();
 
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://aasportsusa.com"],
+    credentials: true,
+  })
+);
 app.set("trust proxy", 1);
 app.use(express.json());
-app.use(cors());
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(compression());

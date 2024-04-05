@@ -17,21 +17,28 @@ const createAccount = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  const { token, refreshToken, user } = await authService.login(
+  console.log(email, password);
+  const { token, refreshToken, user } = await authService.login({
     email,
-    password
-  );
+    password,
+  });
 
   res.header("auth-token", token);
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    sameSite: false,
-    secure: true,
-  });
-  res.status(200).json({
-    token,
-    user,
-  });
+  console.log(refreshToken);
+  res
+    .status(200)
+    .cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+    })
+    .cookie("accessToken", token, {
+      httpOnly: true,
+      secure: true,
+    })
+    .json({
+      token,
+      user,
+    });
 };
 
 const forgotPassword = async (req, res) => {

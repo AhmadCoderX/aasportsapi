@@ -68,16 +68,16 @@ class AuthService {
     }
   }
 
-  async login(email, password) {
+  async login({ email, password }) {
     try {
-      if (!validateUser(email, password)) {
-        throw new ErrorHandler(403, "Invalid login");
-      }
+      // if (!validateUser(email, password)) {
+      //   throw new ErrorHandler(403, "Invalid login");
+      // }
 
       const user = await getUserByEmailDb(email);
-
+      console.log(user);
       if (!user) {
-        throw new ErrorHandler(403, "Email or password incorrect.");
+        throw new ErrorHandler(403, "User Does Not Exist");
       }
 
       // if (user.google_id && !user.password) {
@@ -203,7 +203,7 @@ class AuthService {
   }
   async signToken(data) {
     try {
-      return jwt.sign(data, process.env.SECRET, { expiresIn: "60s" });
+      return jwt.sign(data, process.env.SECRET, { expiresIn: "1h" });
     } catch (error) {
       console.error(error);
       throw new ErrorHandler(500, "An error occurred");
