@@ -1,24 +1,33 @@
 const express = require("express");
-const pool = require("./database/db");
+const pool = require("./config/db");
+const routes = require("./routes");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const morgan = require("morgan");
+const compression = require("compression");
+const { handleError } = require("./helpers/error");
 
 const app = express();
-const PORT = 8000;
+
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+app.set("trust proxy", 1);
+app.use(express.json());
+app.use(cookieParser());
+app.use(morgan("dev"));
+app.use(compression());
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("AA SPORTS API BY AHMAD");
 });
 
-app.get("/about", (req, res) => {
-  res.send("About route 🎉 ");
-});
+app.use(routes);
 
-app.get("/product", async (req, res) => {
-  const product = await pool.query(
-    "Select * from product Where name = 'Baseball Uniform for Women';"
-  );
-  res.json(product.rows[0]);
-});
+app.use(handleError);
 
-app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
-});
+module.exports = app;
