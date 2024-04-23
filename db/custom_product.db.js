@@ -5,10 +5,10 @@ const getAllCustomProductsDb = async () => {
   return product;
 };
 
-const createCustomProductDb = async ({ product_name, sku, category_id }) => {
+const createCustomProductDb = async ({ product_name, sku, category_id , simple_product_id}) => {
   const { rows: createdProduct } = await pool.query(
-    "INSERT INTO custom_product(product_name, sku, category_id) VALUES ($1, $2, $3) RETURNING *",
-    [product_name, sku, category_id]
+    "INSERT INTO custom_product(product_name, sku, category_id, simple_product_id) VALUES ($1, $2, $3, $4) RETURNING *",
+    [product_name, sku, category_id, simple_product_id]
   );
   return createdProduct;
 };
@@ -356,7 +356,7 @@ const deleteBackMaskImageDb = async ({ custom_product_id }) => {
 
 const getCustomProductDb = async ({ c_id }) => {
   const { rows: customProduct } = await pool.query(
-    "SELECT cp.*, ( SELECT jsonb_build_object( 'title', 'frontMaskImage', 'type', 'image', 'src', fmi.src ) FROM front_mask_image fmi WHERE fmi.custom_product_id = cp.c_id LIMIT 1 ) AS frontMaskImage, ( SELECT jsonb_build_object( 'title', 'backMaskImage', 'type', 'image', 'src', bmi.src ) FROM back_mask_image bmi WHERE bmi.custom_product_id = cp.c_id LIMIT 1 ) AS backMaskImage, ( SELECT jsonb_agg( jsonb_build_object( 'title', fo.title, 'type', fo.type, 'path', fo.path, 'color', fo.color, 'id', fo.id )) FROM c_front_objects fo WHERE fo.custom_product_id = cp.c_id ) AS frontObjects,(SELECT jsonb_agg( jsonb_build_object( 'title', bo.title, 'type', bo.type, 'path', bo.path, 'color', bo.color, 'id', bo.id )) FROM c_back_objects bo WHERE bo.custom_product_id = cp.c_id ) AS backObjects, ( SELECT jsonb_agg( jsonb_build_object( 'y', ft.y, 'x', ft.x, 'title', ft.title, 'text', ft.text, 'strokeWidth', ft.strokeWidth, 'fontSize', ft.fontSize, 'draggable', ft.draggable, 'align', ft.align, 'width', ft.width, 'height', ft.height, 'fill', ft.fill, 'stroke', ft.stroke, 'fontFamily', ft.fontFamily, 'id', ft.id )) FROM c_front_text ft WHERE ft.custom_product_id = cp.c_id ) AS frontText, ( SELECT jsonb_agg( jsonb_build_object( 'y', bt.y, 'x', bt.x, 'title', bt.title, 'text', bt.text, 'strokeWidth', bt.strokeWidth, 'fontSize', bt.fontSize, 'draggable', bt.draggable, 'align', bt.align, 'width', bt.width, 'height', bt.height, 'fill', bt.fill, 'stroke', bt.stroke, 'fontFamily', bt.fontFamily, 'id', bt.id )) FROM c_back_text bt WHERE bt.custom_product_id = cp.c_id ) AS backText FROM custom_product cp WHERE cp.c_id = $1",
+    "SELECT cp.*, (SELECT jsonb_build_object('title', 'frontMaskImage', 'type', 'image', 'src', fmi.src) FROM front_mask_image fmi WHERE fmi.custom_product_id = cp.c_id LIMIT 1) AS frontMaskImage, (SELECT jsonb_build_object('title', 'backMaskImage', 'type', 'image', 'src', bmi.src) FROM back_mask_image bmi WHERE bmi.custom_product_id = cp.c_id LIMIT 1) AS backMaskImage, (SELECT jsonb_agg(jsonb_build_object('title', fo.title, 'type', fo.type, 'path', fo.path, 'color', fo.color, 'id', fo.id)) FROM (SELECT * FROM c_front_objects WHERE custom_product_id = cp.c_id ORDER BY date_of_creation ASC) fo) AS frontObjects, (SELECT jsonb_agg(jsonb_build_object('title', bo.title, 'type', bo.type, 'path', bo.path, 'color', bo.color, 'id', bo.id)) FROM (SELECT * FROM c_back_objects WHERE custom_product_id = cp.c_id ORDER BY date_of_creation ASC) bo) AS backObjects, (SELECT jsonb_agg(jsonb_build_object('y', ft.y, 'x', ft.x, 'title', ft.title, 'text', ft.text, 'strokeWidth', ft.strokeWidth, 'fontSize', ft.fontSize, 'draggable', ft.draggable, 'align', ft.align, 'width', ft.width, 'height', ft.height, 'fill', ft.fill, 'stroke', ft.stroke, 'fontFamily', ft.fontFamily, 'id', ft.id)) FROM (SELECT * FROM c_front_text WHERE custom_product_id = cp.c_id ORDER BY date_of_creation ASC) ft) AS frontText, (SELECT jsonb_agg(jsonb_build_object('y', bt.y, 'x', bt.x, 'title', bt.title, 'text', bt.text, 'strokeWidth', bt.strokeWidth, 'fontSize', bt.fontSize, 'draggable', bt.draggable, 'align', bt.align, 'width', bt.width, 'height', bt.height, 'fill', bt.fill, 'stroke', bt.stroke, 'fontFamily', bt.fontFamily, 'id', bt.id)) FROM (SELECT * FROM c_back_text WHERE custom_product_id = cp.c_id ORDER BY date_of_creation ASC) bt) AS backText FROM custom_product cp WHERE cp.c_id = $1",
     [c_id]
   );
   return customProduct[0];

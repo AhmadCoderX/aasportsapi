@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const { ErrorHandler } = require("../helpers/error");
 const customService = require("../services/custom_product.service");
+const pool = require("../config/db");
 
 const getAllCustomProducts = async (req, res) => {
   try {
@@ -14,15 +15,40 @@ const getAllCustomProducts = async (req, res) => {
 
 const createCustomProduct = async (req, res) => {
   try {
-    const { product_name, sku, category_id } = req.body;
+    const { product_name, sku, category_id, simple_product_id } = req.body;
+
     const createdProduct = await customService.createCustomProduct({
       product_name,
       sku,
       category_id,
+      simple_product_id,
     });
+
+    console.log(createdProduct[0]);
+    if (!createdProduct || !createdProduct[0].c_id) {
+      return res.status(400).json({
+        error: "Failed to create custom product or missing custom product ID.",
+      });
+    }
+
+    const custom_product_id = createdProduct[0].c_id;
+
+    const { rowCount, rows: updatedSimpleProduct } = await pool.query(
+      "UPDATE product SET custom_product_id = $1 WHERE id = $2 RETURNING *",
+      [custom_product_id, simple_product_id]
+    );
+    console.log(updatedSimpleProduct[0]);
+
+    if (rowCount === 0) {
+      return res
+        .status(404)
+        .json({ error: "Product not found or could not be updated." });
+    }
+
     res.status(201).json(createdProduct);
   } catch (error) {
-    res.status(500).json(error.message);
+    console.error("Error creating custom product:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -244,7 +270,9 @@ const updateFrontPath = async (req, res) => {
     });
     res.status(201).json(updatedPath);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
+
+    // throw new ErrorHandler(error.statusCode, error.message);
   }
 };
 
@@ -420,7 +448,9 @@ const deleteFrontMaskImage = async (req, res) => {
 
     res.status(200).json(deletedImage);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
+
+    // throw new ErrorHandler(error.statusCode, error.message);
   }
 };
 
@@ -454,7 +484,8 @@ const deleteBackMaskImage = async (req, res) => {
 
     res.status(200).json(deletedImage);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 
@@ -464,7 +495,8 @@ const getCustomProduct = async (req, res) => {
     const product = await customService.getCustomProduct({ c_id });
     res.status(200).json(product);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 

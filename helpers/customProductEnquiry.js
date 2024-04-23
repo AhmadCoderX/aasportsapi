@@ -92,23 +92,32 @@ const customProductEnquiryMail = ({
       <div>
         <strong>Email:</strong> ${customerInfo.email}
       </div>
-      <div>
-        <strong>Phone Number:</strong> ${customerInfo.phoneNumber}
-      </div>
+      ${
+        customerInfo?.phoneNumber !== null || customerInfo?.phoneNumber !== null
+          ? `<div>
+      <strong>Phone Number:</strong> ${customerInfo.phoneNumber}
+    </div>`
+          : ""
+      }
       <div>
         <strong>Message:</strong> ${customerInfo.message}
       </div>
     </div>
 
-    <h3>Product Information</h3>
-    <div class="box product-info">
-      <div>
-        <strong>SKU:</strong> ${productInfo.sku}
-      </div>
-      <div>
-        <strong>Name:</strong> ${productInfo.product_name}
-      </div>
-    </div>
+    ${
+      productInfo && productInfo.sku && productInfo.product_name
+        ? `<h3>Product Information</h3>
+      <div class="box product-info">
+        <div>
+          <strong>SKU:</strong> ${productInfo.sku}
+        </div>
+        <div>
+          <strong>Name:</strong> ${productInfo.product_name}
+        </div>
+      </div>`
+        : ""
+    }
+    
 
     ${
       tableContent
@@ -121,7 +130,6 @@ const customProductEnquiryMail = ({
           <th>Top Size</th>
           <th>Bottom Size</th>
           <th>Qty</th>
-          <th>Price</th>
         </tr>
       </thead>
       <tbody>
@@ -134,7 +142,11 @@ const customProductEnquiryMail = ({
   </div>
 
   <div class="message">
-    <p>The user customized product images are attached to this email.</p>
+    ${
+      tableContent
+        ? `<p>The user customized product images are attached to this email.</p>`
+        : ""
+    }
   </div>
 
 </body>

@@ -7,7 +7,8 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const originalFilename = file.originalname;
-    const uniqueFileName = Date.now() + "-" + originalFilename;
+    const filenameWithoutSpaces = originalFilename.replace(/\s+/g, "_"); // Replace spaces with underscores
+    const uniqueFileName = Date.now() + "-" + filenameWithoutSpaces;
     req.imageNames = req.imageNames || [];
     req.imageNames.push(uniqueFileName);
     cb(null, uniqueFileName); // Generate unique filename with timestamp

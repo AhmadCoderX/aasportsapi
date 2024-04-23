@@ -1,47 +1,69 @@
 const pool = require("../config/db");
 const { ErrorHandler } = require("../helpers/error");
 const productService = require("../services/products.service");
+const fs = require("fs");
+const path = require("path");
 
 const getAllProducts = async (req, res) => {
-  const products = await productService.getAllProducts();
-  res.json(products);
+  try {
+    const products = await productService.getAllProducts();
+    res.json(products);
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const createProduct = async (req, res) => {
-  const { name, description, category_id, sku, type } = req.body;
-  const newProduct = await productService.addProduct({
-    name,
-    description,
-    category_id,
-    sku,
-    type,
-  });
-  res.status(200).json(newProduct);
+  try {
+    const { name, description, category_id, sku, type } = req.body;
+    const newProduct = await productService.addProduct({
+      name,
+      description,
+      category_id,
+      sku,
+      type,
+    });
+    res.status(200).json(newProduct);
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const getProduct = async (req, res) => {
-  const product = await productService.getProductById(req.params);
-  res.status(200).json(product);
+  try {
+    const product = await productService.getProductById(req.params);
+    res.status(200).json(product);
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const updateProduct = async (req, res) => {
-  const { name, description, category_id, sku, type } = req.body;
-  const { id } = req.params;
-  const updatedProduct = await productService.updateProduct({
-    name,
-    description,
-    category_id,
-    id,
-    sku,
-    type,
-  });
-  res.status(200).json(updatedProduct);
+  try {
+    const { name, description, category_id, sku, type } = req.body;
+    const { id } = req.params;
+    const updatedProduct = await productService.updateProduct({
+      name,
+      description,
+      category_id,
+      id,
+      sku,
+      type,
+    });
+    res.status(200).json(updatedProduct);
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const deleteProduct = async (req, res) => {
-  const { id } = req.params;
-  const deletedProduct = await productService.removeProduct({ id });
-  res.status(200).json(deletedProduct);
+  try {
+    const { id } = req.params;
+    const deletedProduct = await productService.removeProduct({ id });
+    res.status(200).json(deletedProduct);
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const getProductReviews = async (req, res) => {
@@ -67,7 +89,9 @@ const getProductReviews = async (req, res) => {
       reviews: reviews.rows,
     });
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
+
+    // throw new ErrorHandler(error.statusCode, error.message);
   }
 };
 
@@ -87,16 +111,14 @@ const createProductReview = async (req, res) => {
   }
 };
 
-const updateProductReview = async (req, res) => {
-  const { content, rating, id } = req.body;
-  // Delete this function later, there's no need for it ❌
+const deleteProductReview = async (req, res) => {
+  const { id } = req.body;
   try {
-    const result = await pool.query(
-      `UPDATE reviews set content = $1, rating = $2 where id = $3 returning *
-      `,
-      [content, rating, id]
+    const { rows: review } = await pool.query(
+      `DELETE FROM reviews WHERE id = $1 RETURNING *`,
+      [id]
     );
-    res.json(result.rows);
+    res.json(review[0]);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -112,8 +134,8 @@ const addPrimaryImage = async (req, res) => {
     });
     res.status(200).json(addedImage);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
-    // res.status(500).json(error);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 
@@ -128,8 +150,8 @@ const updatePrimaryImage = async (req, res) => {
     });
     res.status(200).json(updatedImage);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
-    // res.status(500).json(error);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 
@@ -144,8 +166,8 @@ const addSecondaryImage = async (req, res) => {
     });
     res.status(200).json(addedImage);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
-    // res.status(500).json(error);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 
@@ -160,8 +182,8 @@ const updateSecondaryImage = async (req, res) => {
     });
     res.status(200).json(updatedImage);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
-    // res.status(500).json(error);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 
@@ -176,9 +198,17 @@ const deleteSecondaryImage = async (req, res) => {
     if (!deletedImage) {
       return res.status(404).json({ message: "Image not found" });
     }
-    res.status(200).json(image_id);
+
+    const imagePath = path.join(
+      __dirname,
+      "../uploads",
+      deletedImage.image_url
+    ); // Adjust the path to your uploads directory
+    fs.unlinkSync(imagePath);
+
+    res.status(200).json(deletedImage);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
     res.status(500).json(error);
   }
 };
@@ -189,7 +219,9 @@ const searchProduct = async (req, res) => {
     const searchResult = await productService.searchProduct({ searchTerm });
     res.status(200).json(searchResult);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
+
+    res.status(500).json(error);
   }
 };
 
@@ -203,7 +235,7 @@ const addProductTag = async (req, res) => {
     });
     res.status(201).json(addedTag);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
     res.status(500).json(error.message);
   }
 };
@@ -241,8 +273,8 @@ module.exports = {
   deleteProduct,
   getAllProducts,
   getProductReviews,
-  updateProductReview,
   createProductReview,
+  deleteProductReview,
   addPrimaryImage,
   updatePrimaryImage,
   addSecondaryImage,

@@ -40,8 +40,17 @@ const updateReviewDb = async ({ content, rating, id }) => {
   return review[0];
 };
 
+const deleteReviewDb = async ({ id }) => {
+  const { rows: review } = await pool.query(
+    `DELETE FROM reviews WHERE id = $1 RETURNING *`,
+    [id]
+  );
+  return review[0];
+};
+
 module.exports = {
   createReviewDb,
   updateReviewDb,
   getReviewsDb,
+  deleteReviewDb
 };

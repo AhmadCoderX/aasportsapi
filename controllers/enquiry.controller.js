@@ -14,6 +14,13 @@ const sendEnquiry = async (req, res) => {
     productRoster,
   } = req.body; // Destructure request body
 
+  let parsedProductRoster = null;
+
+  // Parse productRoster if it's present
+  if (productRoster) {
+    parsedProductRoster = JSON.parse(productRoster);
+  }
+
   let attachments = [];
   if (req.files) {
     const frontCanvasBlob = req.files?.frontCanvasImage
@@ -22,6 +29,7 @@ const sendEnquiry = async (req, res) => {
     const backCanvasBlob = req.files?.backCanvasImage
       ? req.files?.backCanvasImage[0].buffer
       : null; // assuming first element
+    const rosterSheet = req.files?.rosterSheet ? req.files?.rosterSheet[0].buffer : null;
 
     if (frontCanvasBlob) {
       attachments.push({
@@ -34,6 +42,12 @@ const sendEnquiry = async (req, res) => {
         filename: "backCanvasImage.png",
         content: backCanvasBlob,
       });
+    }
+    if(rosterSheet){
+      attachments.push({
+        filename: "rosterSheet.xlsx",
+        content: rosterSheet
+      })
     }
   }
 
@@ -59,17 +73,19 @@ const sendEnquiry = async (req, res) => {
     // ... other data objects
   ];
   let tableContent = "";
-  productRoster?.forEach((item) => {
-    tableContent += `<tr>
+  if (Array.isArray(parsedProductRoster)) {
+    console.log(parsedProductRoster);
+    parsedProductRoster?.forEach((item) => {
+      tableContent += `<tr>
     <td>${item.number}</td>
     <td>${item.name}</td>
-    <td>${item.topSize}</td>
-    <td>${item.bottomSize}</td>
-    <td>${item.qty}</td>
-    <td>${item.price}</td>
-  </tr>`;
-  });
-  if (!productRoster) {
+      <td>${item.topSize}</td>
+      <td>${item.bottomSize}</td>
+      <td>${item.qty}</td>
+    </tr>`;
+    });
+  }
+  if (!parsedProductRoster) {
     tableContent = false;
   }
 
@@ -91,7 +107,7 @@ const sendEnquiry = async (req, res) => {
     res.json({ message: "Email sent successfully!", info });
   } catch (error) {
     console.error("Error sending email:", error);
-    throw new Error(error);
+    // throw new Error(error);
     res.status(500).json({ message: "Error sending email" });
   }
 };

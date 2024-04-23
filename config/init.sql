@@ -83,7 +83,7 @@ ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE customer ADD password VARCHAR(255);
 
 -- resetTokens table
-CREATE TABLE resetTokens
+CREATE TABLE resetTokens 
 (
     id UUID DEFAULT uuid_generate_v4() NOT NULL,
     email character varying NOT NULL,
@@ -182,6 +182,10 @@ ADD COLUMN back_image_src TEXT;
 ALTER TABLE custom_product
 ADD COLUMN category_id UUID REFERENCES category(id) ON DELETE SET NULL;
 
+-- Adding simple product id in the custom_product table
+ALTER TABLE custom_product
+ADD COLUMN simple_product_id UUID REFERENCES product(id) ON DELETE SET NULL;
+
 
 
 CREATE TABLE c_front_objects (
@@ -191,8 +195,10 @@ CREATE TABLE c_front_objects (
     type VARCHAR(255),
     path TEXT,
     color VARCHAR(100),
-    id TEXT
+    id TEXT, 
+    date_of_creation: TIMESTAMP DEFAULT NOW()
 );
+
 
 CREATE TABLE c_back_objects (
     back_object_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -201,7 +207,8 @@ CREATE TABLE c_back_objects (
     type VARCHAR(255),
     path TEXT,
     color VARCHAR(100),
-    id TEXT
+    id TEXT,
+    date_of_creation: TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE c_front_text (
@@ -220,7 +227,8 @@ CREATE TABLE c_front_text (
     fill VARCHAR(100) NOT NULL,
     stroke VARCHAR(100) NOT NULL,
     fontFamily VARCHAR(255) NOT NULL,
-    id TEXT NOT NULL
+    id TEXT NOT NULL,
+    date_of_creation: TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE c_back_text (
@@ -239,21 +247,24 @@ CREATE TABLE c_back_text (
     fill VARCHAR(100) NOT NULL,
     stroke VARCHAR(100) NOT NULL,
     fontFamily VARCHAR(255) NOT NULL,
-    id TEXT NOT NULL
+    id TEXT NOT NULL,
+    date_of_creation: TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE front_mask_image (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
     title VARCHAR(255),
-    src TEXT NOT NULL
+    src TEXT NOT NULL,
+    date_of_creation: TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE back_mask_image (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     custom_product_id UUID NOT NULL REFERENCES custom_product(c_id) ON DELETE CASCADE,
     title VARCHAR(255),
-    src TEXT NOT NULL
+    src TEXT NOT NULL,
+    date_of_creation: TIMESTAMP DEFAULT NOW()
 );
 
 -- User Custom Product Table

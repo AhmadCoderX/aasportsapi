@@ -7,7 +7,6 @@ const {
   deleteProduct,
   getAllProducts,
   getProductReviews,
-  updateProductReview,
   createProductReview,
   addSecondaryImage,
   updateSecondaryImage,
@@ -18,6 +17,7 @@ const {
   addProductTag,
   updateProductTag,
   deleteProductTag,
+  deleteProductReview,
 } = require("../controllers/products.controller");
 const verifyToken = require("../middleware/verifyToken");
 
@@ -37,7 +37,7 @@ router
   .route("/:id/reviews")
   .get(getProductReviews)
   .post(createProductReview)
-  .put(updateProductReview);
+  .delete(deleteProductReview);
 
 // Primary Image Addition Routes
 router

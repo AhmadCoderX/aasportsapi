@@ -3,24 +3,32 @@ const { ErrorHandler } = require("../helpers/error");
 const { hashPassword } = require("../helpers/hashPassword");
 
 const getAllUsers = async (req, res) => {
-  const results = await userService.getAllUsers();
-  res.status(200).json(results);
+  try {
+    const results = await userService.getAllUsers();
+    res.status(200).json(results);
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const createUser = async (req, res) => {
-  const { name, password, email } = req.body;
-  const hashedPassword = await hashPassword(password);
+  try {
+    const { name, password, email } = req.body;
+    const hashedPassword = await hashPassword(password);
 
-  const user = await userService.createUser({
-    name,
-    email,
-    password: hashedPassword,
-  });
+    const user = await userService.createUser({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
-  res.status(201).json({
-    status: "success",
-    user,
-  });
+    res.status(201).json({
+      status: "success",
+      user,
+    });
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const getUserById = async (req, res) => {
@@ -29,16 +37,21 @@ const getUserById = async (req, res) => {
     const user = await userService.getUserById(id);
     return res.status(200).json(user);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, "User not found");
+    // throw new ErrorHandler(error.statusCode, "User not found");
+    res.status(500).json(error);
   }
 };
 
 const getUserProfile = async (req, res) => {
-  const { id } = req.body.user;
+  try {
+    const { id } = req.body.user;
 
-  const user = await userService.getUserById(id);
+    const user = await userService.getUserById(id);
 
-  return res.status(200).json(user);
+    return res.status(200).json(user);
+  } catch {
+    res.status(500).json(error);
+  }
 };
 
 const updateUser = async (req, res) => {
@@ -58,7 +71,8 @@ const updateUser = async (req, res) => {
     });
     return res.status(201).json(results);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 
@@ -68,7 +82,8 @@ const deleteUser = async (req, res) => {
     const result = await userService.deleteUser(id);
     res.status(200).json(result);
   } catch (error) {
-    throw new ErrorHandler(error.statusCode, error.message);
+    // throw new ErrorHandler(error.statusCode, error.message);
+    res.status(500).json(error);
   }
 };
 

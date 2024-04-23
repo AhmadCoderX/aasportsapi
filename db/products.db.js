@@ -134,6 +134,7 @@ const deleteProductTagDb = async ({ tag_id }) => {
   return deletedTag[0];
 };
 
+
 module.exports = {
   getProductDb,
   getAllProductsDb,
