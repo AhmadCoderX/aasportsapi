@@ -5,7 +5,12 @@ const getAllCustomProductsDb = async () => {
   return product;
 };
 
-const createCustomProductDb = async ({ product_name, sku, category_id , simple_product_id}) => {
+const createCustomProductDb = async ({
+  product_name,
+  sku,
+  category_id,
+  simple_product_id,
+}) => {
   const { rows: createdProduct } = await pool.query(
     "INSERT INTO custom_product(product_name, sku, category_id, simple_product_id) VALUES ($1, $2, $3, $4) RETURNING *",
     [product_name, sku, category_id, simple_product_id]
@@ -18,10 +23,11 @@ const updateCustomProductDb = async ({
   sku,
   category_id,
   id,
+  simple_product_id,
 }) => {
   const { rows: updatedProduct } = await pool.query(
-    "UPDATE custom_product SET product_name = $1, sku = $2, category_id = $3 WHERE c_id = $4 RETURNING *",
-    [product_name, sku, category_id, id]
+    "UPDATE custom_product SET product_name = $1, sku = $2, category_id = $3, simple_product_id = $4 WHERE c_id = $5 RETURNING *",
+    [product_name, sku, category_id, simple_product_id, id]
   );
   return updatedProduct;
 };
