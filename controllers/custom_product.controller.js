@@ -54,14 +54,27 @@ const createCustomProduct = async (req, res) => {
 
 const updateCustomProduct = async (req, res) => {
   try {
-    const { product_name, sku, category_id } = req.body;
+    const { product_name, sku, category_id, simple_product_id } = req.body;
     const { c_id } = req.params;
     const updatedProduct = await customService.updateCustomProduct({
       product_name,
       sku,
       category_id,
       id: c_id,
+      simple_product_id: simple_product_id,
     });
+
+    const { rowCount, rows: updatedSimpleProduct } = await pool.query(
+      "UPDATE product SET custom_product_id = $1 WHERE id = $2 RETURNING *",
+      [c_id, simple_product_id]
+    );
+    console.log(updatedSimpleProduct[0]);
+
+    if (rowCount === 0) {
+      return res
+        .status(404)
+        .json({ error: "Product not found or could not be updated." });
+    }
     res.status(200).json(updatedProduct);
   } catch (error) {
     res.status(500).json(error.message);
