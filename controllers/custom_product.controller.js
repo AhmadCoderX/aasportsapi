@@ -242,6 +242,11 @@ const addBackText = async (req, res) => {
 const addFrontMaskImage = async (req, res) => {
   try {
     const { custom_product_id, title } = req.body;
+    // Delete any existing mask images
+    const deleteMaskImage = await pool.query(
+      "DELETE FROM front_mask_image WHERE custom_product_id = $1",
+      [custom_product_id]
+    );
     const src = req.imageNames[0];
     const addedMaskImage = await customService.addFrontMaskImage({
       custom_product_id,
@@ -257,6 +262,11 @@ const addFrontMaskImage = async (req, res) => {
 const addBackMaskImage = async (req, res) => {
   try {
     const { custom_product_id, title } = req.body;
+    // Delete any existing mask images
+    const deleteMaskImage = await pool.query(
+      "DELETE FROM back_mask_image WHERE custom_product_id = $1",
+      [custom_product_id]
+    );
     const src = req.imageNames[0];
     const addedMaskImage = await customService.addBackMaskImage({
       custom_product_id,
